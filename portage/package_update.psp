@@ -1,0 +1,183 @@
+<%
+##############################################################################
+# This is a very quick and dirty psp script for portage
+##############################################################################
+# This script is a part of gentoo portage www interface
+##############################################################################
+#    package_update.psp is a small Python Server Pages script, which will give
+#    a nice html page containing the packages which needs to be updated
+#    Copyright (C) 2008  Juhapekka Piiroinen
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#############################################################################
+# Contact: juhapekka.piiroinen@gmail.com
+#############################################################################
+
+import os,subprocess,time
+def IsUpdateAvailable(value):
+	if (value=="[U]"):
+		return True
+	else:
+		return False
+def GetInfo(package):
+	return os.popen('eix -c ^%s$' % package).read().split("\n")
+def ReadLastUpdateLog():
+	retval = ""
+	lines = open("/tmp/lastupdatelog","r").readlines()
+	for line in lines:
+		retval += line
+	return retval
+def IsMarkedForUpdate(value):
+	global updatelist
+	try:
+		updatelist.index(value+"\n")
+		return True
+	except ValueError:
+		return False
+
+from mod_python import util
+form = util.FieldStorage(req)
+tulos = ""
+pack = req.form.getfirst("package","")
+f = open("/tmp/updatelist","a")
+f.write(pack+"\n")
+f.close()
+empty_update = req.form.getfirst("delete_updatelist","")
+if empty_update:
+	#os.remove("/tmp/updatelist")
+	f = open("/tmp/updatelist","w")
+	f.write("")
+	f.close()
+global updatelist
+updatelist = open("/tmp/updatelist","r").readlines()
+#tulos = subprocess.call(["emerge","-p %s" % pack]) 
+
+#
+%>
+
+<html>
+<head>
+<style type="text/css">
+li {
+	list-style-type: none
+}
+</style>
+</head>
+<body>
+<h2>Gentoo Portage - Updates</h2>
+<table border="1">
+<tr><th>#</th><th>Package</th><th>Description</th><th>Status</th><th>Current version</th><th>Available 
+version</th><th>Action</th></tr>
+<%
+installed_packages = os.popen('eix -Ic').read().split("\n")
+queue_packages = list()
+update_packages = list()
+all_packages = list()
+i = 0
+for package in installed_packages:
+	package = package.split(":")
+	if len(package)>1:
+		description = package[1].strip()
+		name = package[0].split(" ")[1]
+		cversion = package[0].split(" ")[2]
+		all_packages.append((name,description,cversion))
+		update = IsUpdateAvailable(package[0].split(" ")[0])
+		uversion = ""
+		if IsMarkedForUpdate(name):
+			queue_packages.append(name)
+		if update:
+			i += 1
+			update_packages.append(name)
+			uversion = package[0].split(" ")[4]
+			uversion = uversion[0:len(uversion)-1].replace(" ","<br />")
+			cversion = package[0].split(" ")[2][1:]
+			if (IsMarkedForUpdate(name)):
+				update = "IN QUEUE"
+			else:
+				update = "UPDATE!"
+			#else:
+			#	uversion = ""
+			#	update = ""
+			#
+%>
+<tr><td><%=i%></td><td><%=name%></td><td><%=description%></td><td><%=update%></td><td><%=cversion%></td><td><%=uversion%></td><%
+			if (IsMarkedForUpdate(name)):
+				#
+%>
+<%
+			else:
+				#
+%>
+<td><form method="post" action="">
+<input type="hidden" name="package" value="<%=name%>" />
+<input type="hidden" name="description" value="<%=description%>" />
+<input type="hidden" name="version" value="<%=uversion%>" />
+<input type="submit" name="update" value="update" />
+</form>
+</td><%
+			#
+%>
+</tr>
+<%
+#
+%>
+</table>
+<pre>
+Total Packages: <%=len(installed_packages)%>
+Updates Available: <%=len(update_packages)%>
+Update Queue: <%=len(queue_packages)%>
+
+Next update will be run at 04:00:00.
+Current time is <%=time.strftime("%H:%M:%S",time.localtime())%>.
+</pre>
+<h2>All packages</h2>
+<table>
+<tr><th>Name</th><th>Description</th><th>Current Version</th></tr>
+<%
+for package in all_packages:
+	#
+%>
+<tr><td><%=package[0]%></td><td><%=package[1]%></td><td><%=package[2]%></td></tr>
+<%
+	#
+
+%>
+</table>
+<h2>Current update list</h2>
+<table>
+<tr><th>Name</th><th>Description</th><th>Current Version</th><th>Update version</th></tr>
+<%
+for package in queue_packages:
+	package = GetInfo(package)[0].split(":")
+	description = package[1].strip()
+	name = package[0].split(" ")[1]
+	cversion = package[0].split(" ")[2]
+	uversion = package[0].split(" ")[4]
+	uversion = uversion[0:len(uversion)-1].replace(" ","<br />")
+	#
+%>
+<tr><td><%=name%></td><td><%=description%></td><td><%=cversion%></td><td><%=uversion%></td></tr>
+<%	#
+#
+%>
+</table>
+<h2>Actions</h2>
+<form method="post" action="">
+<input type="submit" name="delete_updatelist" value="Empty current updatelist" />
+</form>
+<h5>License & Copyright</h5>
+&copy; 2008 Juhapekka Piiroinen - GNU/GPLv3 - <a 
+href="http://code.google.com/p/quickanddirty">QuickAndDirty</a>-project
+</body>
+</html>
