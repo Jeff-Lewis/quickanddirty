@@ -11,8 +11,11 @@ class db_connection(object):
 		
 	def default_db(self):
 		self.cursor.execute("create table config (feed,time,title)")
-		self.cursor.execute("create table feeds (time,title,link)")
-		self.insert_new_feed()
+		self.cursor.execute("create table feeds (time,title,link,feedid)")
+#		self.insert_new_feed()
+		self.insert_new_feed(feedurl="http://rss.slashdot.org/Slashdot/slashdot",title="Slashdot")
+		self.insert_new_feed(feedurl="http://feeds.feedburner.com/ItechNewsNet",title="iTech News Net")
+		self.insert_new_feed(feedurl="http://www.linuxdevices.com/backend/headlines.rss",title="Linux Devices")
 		
 	def close(self):
 		self.conn.commit()
@@ -23,13 +26,17 @@ class db_connection(object):
 		
 	def read_feeds(self,table):
 		
-		self.query = "select feed,title from "+table
+		self.query = "select feed,title,rowid from "+table
 		
 		self.cursor.execute(self.query)
 		self.answer = self.cursor.fetchall()
 		
 		return self.answer
 	
+	def read_feedname(self,feedid):
+		self.cursor.execute("select title from config where rowid="+str(feedid))
+		return self.cursor.fetchone()[0]
+		
 	def read_newslinks(self):
 		self.cursor.execute("select link from feeds")
 		self.answer2 = self.cursor.fetchall()
@@ -39,20 +46,20 @@ class db_connection(object):
 		return self.answer
 		
 	def read_news(self):
-		self.cursor.execute("select * from feeds")
+		self.cursor.execute("select * from feeds order by time")
 		self.answer = self.cursor.fetchall()
 		return self.answer		
 	
-	def write_table(self,title,link):
+	def write_table(self,title,link,feedid):
 		self.cursor.execute("select * from feeds where title = ? and link = ?",(title,link))
 		self.aa = self.cursor.fetchone()
 		try:
 			if len(self.aa) > 0: pass
 			else:
-				self.cursor.execute("insert into feeds values (date('now'),?,?)",(title,link))
+				self.cursor.execute("insert into feeds values (date('now'),?,?,?)",(title,link,feedid))
 				self.conn.commit()
 		except TypeError:
-			self.cursor.execute("insert into feeds values (date('now'),?,?)",(title,link))
+			self.cursor.execute("insert into feeds values (date('now'),?,?,?)",(title,link,feedid))
 			self.conn.commit()
 
 	def write_stamp_feed(self,feed):

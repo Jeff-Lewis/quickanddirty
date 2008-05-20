@@ -44,7 +44,7 @@ def p(msg):
 def f(data):
 	return data.encode("latin1","ignore")
 
-def rss_feed(feed):
+def rss_feed(feed,feedid):
 	d = feedparser.parse(feed)
 	db.write_stamp_feed(feed)
 	feeds = db.read_newslinks()
@@ -56,7 +56,7 @@ def rss_feed(feed):
 			#	db.write_stamp_news(entry.title,entry.link)
 			#else:
 			p("Adding new link "+entry.link)
-			db.write_table(entry.title,entry.link)
+			db.write_table(entry.title,entry.link,feedid)
 
 if __name__ == "__main__":
 	if not _DEBUG:
@@ -96,7 +96,8 @@ if __name__ == "__main__":
 		for feed in feeds:
 			p("")
 			p("Reading feed: "+feed[1])
-			rss_feed(feed[0])
+			p("Feed id: "+str(feed[2]))
+			rss_feed(feed[0],feed[2])
 		p("Generating html file.")
 		www = rss_www.html_generator()
 		www.html()
