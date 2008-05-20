@@ -39,7 +39,7 @@ class Config(object):
 		self.conf.set("DATABASE","path",os.getcwd()+os.sep+"qad_rssreader.db")
 		self.conf.set("DATABASE","config_table","config")
 		self.conf.set("DATABASE","feed_table","feeds")
-		self.conf.set("DATABASE","cycle","30")
+		self.conf.set("DATABASE","cycle","300")
 		self.conf.add_section("FTP")
 		self.conf.set("FTP","path","/")
 		self.conf.set("FTP","username","your_username")
