@@ -43,7 +43,7 @@ import rss_db
 import rss_www
 import rss_ftp
 
-_DEBUG = True
+_DEBUG = False
 
 def p(msg):
 	if (_DEBUG):
