@@ -30,111 +30,72 @@
 ############################################################################
 import feedparser,sys,ConfigParser,os,time
 from sqlite3 import dbapi2 as sqlite
+import rss_config
+import rss_db
 
-class Config(object):
-	def __init__(self, conf_path):
-		self.conf_path = conf_path
-		self.conf = ConfigParser.ConfigParser()
-		self.conf.readfp(open(self.conf_path))
-	
-	def read_conf(self):
-		self.a = self.conf.get('DATABASE','path')
-		self.b = self.conf.get('DATABASE','config_table')
-		self.c = self.conf.get('DATABASE','feed_table')
-		self.d = self.conf.get('DATABASE','cycle')
-		self.d = int(self.d)
+_DEBUG = False
 
-		return self.a, self.b, self.c, self.d
+def p(msg):
+	if (_DEBUG):
+		print msg
 		
-class db_connection(object):
-	def __init__(self,db_address):
-		#self.conn = sqlite.connect("rssfeed.db")
-		self.conn = sqlite.connect(db_address)
-		self.cursor = self.conn.cursor()
-
-	def read_table(self,table):
-		
-		self.query = "select feed from "+table
-		
-		self.cursor.execute(self.query)
-		self.answer = self.cursor.fetchall()
-		
-		return self.answer
-	
-	def read_table2(self):
-		self.cursor.execute("select link from feeds")
-		self.answer = self.cursor.fetchall()
-		return self.answer
-	
-	def write_table(self,title,link):
-		self.cursor.execute("select * from feeds where title = ? and link = ?",(title,link))
-		self.aa = self.cursor.fetchone()
-		try:
-			if len(self.aa) > 0: pass
-			else:
-				self.cursor.execute("insert into feeds values (date('now'),?,?)",(title,link))
-				self.conn.commit()
-		except TypeError:
-			self.cursor.execute("insert into feeds values (date('now'),?,?)",(title,link))
-			self.conn.commit()
-
-	def write_stamp(self,title,link):
-		self.cursor.execute("update set time = date('now') where title = ?",(title,))
-		self.conn.commit()
 
 def f(data):
 	return data.encode("latin1","ignore")
 
 def rss_feed(feed):
 	d = feedparser.parse(feed)
+	db.write_stamp_feed(feed)
 	feeds = db.read_table2()
+	p("Total items: "+str(len(feeds)))
 	for entry in d.entries:
-		
-		if entry.link in feeds:
-			db.write_stamp(entry.title,entry.link)
-		else:
+		#print entry.link in feeds
+		if not entry.link in feeds:
+			#print "Updating timestamp for "+entry.link
+			#	db.write_stamp_news(entry.title,entry.link)
+			#else:
+			p("Adding new link "+entry.link)
 			db.write_table(entry.title,entry.link)
 
 if __name__ == "__main__":
-	#do first fork
-	try: 
-        	pid = os.fork() 
-        	if pid > 0:
-        	    # exit first parent
-        	    sys.exit(0) 
-    	except OSError, e: 
-        	print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror) 
-        	sys.exit(1)
+	if not _DEBUG:
+		#do first fork
+		try: 
+        		pid = os.fork() 
+	        	if pid > 0:
+	        	    # exit first parent
+        		    sys.exit(0) 
+	    	except OSError, e: 
+        		print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror) 
+	        	sys.exit(1)
 	
-	os.chdir("/") 
-	os.setsid() 
-	os.umask(0) 
+		#os.chdir("/") 
+		#os.setsid() 
+		#os.umask(0) 
 
-    	# do second fork
-    	try: 
-        	pid = os.fork() 
-        	if pid > 0:
-            		# exit from second parent, print eventual PID before
-            		print "Daemon PID %d" % pid 
-            		sys.exit(0) 
-    	except OSError, e: 
-        	print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror) 
-        	sys.exit(1) 
+	    	# do second fork
+    		try: 
+	        	pid = os.fork() 
+        		if pid > 0:
+            			# exit from second parent, print eventual PID before
+            			print "Daemon PID %d" % pid 
+	            		sys.exit(0) 
+    		except OSError, e: 
+	        	print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror) 
+        		sys.exit(1) 
+	p("Starting qad_rssreader..")
 	while 1:
-		try:
-			config_file = sys.argv[1]
-		except IndexError:
-			config_file = "./rss.cnf"
 
-		c = Config(config_file)
+		c = rss_config.Config()
 		db_things = c.read_conf()
 	
-		db = db_connection(db_things[0])
-		feeds = db.read_table(db_things[1])
+		db = rss_db.db_connection(db_things[0])
+		feeds = db.read_feeds(db_things[1])
 	
 		for feed in feeds:
+			p("")
+			p("Reading feed: "+feed[1])
 			rss_feed(feed[0])
-		
+		p("Sleeping for "+str(db_things[3])+" seconds")
 		time.sleep(db_things[3])
-		#rss_feed("http://www.iltalehti.fi/rss/rss.xml")
 
