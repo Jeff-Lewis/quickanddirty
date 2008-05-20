@@ -32,8 +32,9 @@ import feedparser,sys,ConfigParser,os,time
 from sqlite3 import dbapi2 as sqlite
 import rss_config
 import rss_db
+import rss_www
 
-_DEBUG = False
+_DEBUG = True
 
 def p(msg):
 	if (_DEBUG):
@@ -46,7 +47,7 @@ def f(data):
 def rss_feed(feed):
 	d = feedparser.parse(feed)
 	db.write_stamp_feed(feed)
-	feeds = db.read_table2()
+	feeds = db.read_newslinks()
 	p("Total items: "+str(len(feeds)))
 	for entry in d.entries:
 		#print entry.link in feeds
@@ -96,6 +97,10 @@ if __name__ == "__main__":
 			p("")
 			p("Reading feed: "+feed[1])
 			rss_feed(feed[0])
+		p("Generating html file.")
+		www = rss_www.html_generator()
+		www.html()
+		del www
 		p("Sleeping for "+str(db_things[3])+" seconds")
 		time.sleep(db_things[3])
 

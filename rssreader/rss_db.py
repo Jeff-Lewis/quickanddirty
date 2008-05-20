@@ -30,13 +30,18 @@ class db_connection(object):
 		
 		return self.answer
 	
-	def read_table2(self):
+	def read_newslinks(self):
 		self.cursor.execute("select link from feeds")
 		self.answer2 = self.cursor.fetchall()
 		self.answer = []
 		for item in self.answer2:
 			self.answer.append(item[0])
 		return self.answer
+		
+	def read_news(self):
+		self.cursor.execute("select * from feeds")
+		self.answer = self.cursor.fetchall()
+		return self.answer		
 	
 	def write_table(self,title,link):
 		self.cursor.execute("select * from feeds where title = ? and link = ?",(title,link))
