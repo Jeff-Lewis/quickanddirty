@@ -33,6 +33,7 @@ from sqlite3 import dbapi2 as sqlite
 import rss_config
 import rss_db
 import rss_www
+import rss_ftp
 
 _DEBUG = True
 
@@ -83,7 +84,8 @@ if __name__ == "__main__":
 	            		sys.exit(0) 
     		except OSError, e: 
 	        	print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror) 
-        		sys.exit(1) 
+        		sys.exit(1)
+
 	p("Starting qad_rssreader..")
 	while 1:
 
@@ -91,6 +93,7 @@ if __name__ == "__main__":
 		db_things = c.read_conf()
 	
 		db = rss_db.db_connection(db_things[0])
+		newslinks = db.read_newslinks()
 		feeds = db.read_feeds(db_things[1])
 	
 		for feed in feeds:
@@ -98,10 +101,19 @@ if __name__ == "__main__":
 			p("Reading feed: "+feed[1])
 			p("Feed id: "+str(feed[2]))
 			rss_feed(feed[0],feed[2])
-		p("Generating html file.")
-		www = rss_www.html_generator()
-		www.html()
-		del www
+		
+		if (len(newslinks)!=len(db.read_newslinks())):
+			p("Generating html file.")
+			www = rss_www.html_generator()
+			www.html()
+			del www
+
+			server = c.get("FTP","server")
+			username = c.get("FTP","username")
+			password = c.get("FTP","password")
+			path = c.get("FTP","path")
+			p("Uploading to "+server)
+			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path)
 		p("Sleeping for "+str(db_things[3])+" seconds")
 		time.sleep(db_things[3])
 

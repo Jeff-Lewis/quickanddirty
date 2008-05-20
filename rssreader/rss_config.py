@@ -12,12 +12,22 @@ class Config(object):
 		except IOError:
 			self.default_conf()
 	
+	def get(self,section,key):
+		return self.conf.get(section,key)
+		
 	def default_conf(self):
 		self.conf.add_section("DATABASE")
 		self.conf.set("DATABASE","path",os.getcwd()+os.sep+"qad_rssreader.db")
 		self.conf.set("DATABASE","config_table","config")
 		self.conf.set("DATABASE","feed_table","feeds")
 		self.conf.set("DATABASE","cycle","30")
+		self.conf.add_section("FTP")
+		self.conf.set("FTP","path","/")
+		self.conf.set("FTP","username","your_username")
+		self.conf.set("FTP","password","your_password")
+		self.conf.set("FTP","server","your_server")
+		self.conf.add_section("HTML")
+		self.conf.set("HTML","filename","index.html")
 		f = open(self.conf_path,"w")
 		self.conf.write(f)
 		f.close()

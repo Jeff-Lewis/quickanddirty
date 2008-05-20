@@ -1,10 +1,16 @@
 #!/usr/bin/python
 from sqlite3 import dbapi2 as sqlite
+import os
 
 class db_connection(object):
 	def __init__(self,db_address="qad_rssreader.db"):
-		self.conn = sqlite.connect(db_address)
-		self.cursor = self.conn.cursor()
+		if (os.path.exists(db_address)):
+			self.conn = sqlite.connect(db_address)
+			self.cursor = self.conn.cursor()
+		else:
+			self.conn = sqlite.connect(db_address)
+			self.cursor = self.conn.cursor()
+			self.default_db()
 
 	def __del__(self):
 		self.close()
