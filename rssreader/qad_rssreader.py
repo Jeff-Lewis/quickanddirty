@@ -23,10 +23,18 @@
 # Contact: 	juhapekka.piiroinen@gmail.com
 # 		petri.ilmarinen@gmail.com
 #############################################################################
-# Release info for version 0.1
-# rssreader must have in the database "feeds" -table
-# database path must be absolute
-# configuration file passed as parameter must also be absolute
+# Release info for 
+#  version 0.1 - pi
+#  - rssreader must have in the database "feeds" -table
+#  - database path must be absolute
+#  - configuration file passed as parameter must also be absolute
+#  version 0.2 - jp
+#  - includes support for html generation
+#  - includes support for ftp upload
+#  - generates default configuration automatically
+#  - divided into multiple files
+############################################################################
+# Version 0.2
 ############################################################################
 import feedparser,sys,ConfigParser,os,time
 from sqlite3 import dbapi2 as sqlite

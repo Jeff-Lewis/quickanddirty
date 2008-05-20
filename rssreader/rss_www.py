@@ -16,6 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #############################################################################
+# Version 0.2
+############################################################################
 import rss_db,rss_config
 import ftplib
 
@@ -32,8 +34,10 @@ class html_generator(object):
 		
 	def html_header(self):
 		self.write("<html>\n<head>\n<title>qad_rssreader</title>\n</head>\n<body>")
+		self.write("<h1>qad_rssreader</h1>")
 		
 	def html_footer(self):
+		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project")
 		self.write("</body>\n</html>")
 		
 	def html(self):
