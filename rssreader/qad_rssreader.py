@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 ##############################################################################
 # This is a very quick and dirty rss reader with sqlite support
 ##############################################################################
@@ -42,8 +43,12 @@ import rss_config
 import rss_db
 import rss_www
 import rss_ftp
+import sys
 
 _DEBUG = False
+
+if len(sys.argv)>1:
+	_DEBUG = True
 
 def p(msg):
 	if (_DEBUG):
