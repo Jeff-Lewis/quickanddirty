@@ -33,24 +33,26 @@ class html_generator(object):
 		self.f.write(self.format(line))
 		
 	def html_header(self):
-		self.write("<html>\n<head>\n<title>qad_rssreader</title>\n</head>\n<body>")
-		self.write("<h1>qad_rssreader</h1>")
+		self.write("<html>\n<head>\n<title>qad_rssreader</title>")
+		self.write("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />")
+		self.write("</head>\n<body>\n")
+		self.write("<h1>qad_rssreader</h1>\n")
 		
 	def html_footer(self):
-		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project")
-		self.write("</body>\n</html>")
+		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
+		self.write("</body>\n</html>\n")
 		
 	def html(self):
 		feeds = self.db.read_news()
 		self.html_header()
-		self.write("<table>")
+		self.write("<table>\n")
 		for line in feeds:
-			self.write("<tr>")
+			self.write("<tr>\n")
 			date,title,url,feedid = line
 			feedname = self.db.read_feedname(feedid)
 			self.write("<td>"+date+"</td><td>"+feedname+"</td><td><a href=\""+url+"\">"+title+"</a></td>")
-			self.write("</tr>")
-		self.write("</table>")
+			self.write("</tr>\n")
+		self.write("</table>\n")
 		self.html_footer()
 			
 	def __del__(self):
