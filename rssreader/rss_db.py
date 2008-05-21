@@ -91,7 +91,10 @@ class db_connection(object):
 	def write_stamp_feed(self,feed):
 		self.cursor.execute("update rssfeeds set time=datetime('now') where feed=?",(feed,))
 		self.conn.commit()
-		
+	def update_feedtitle(self,feed,title):
+		self.cursor.execute("update rssfeeds set title='"+title+"' where feed=?",(feed,))	
+		self.conn.commit()
+
 	def write_stamp_news(self,title,link):
 		self.cursor.execute("update rsstopics set time=datetime('now') where title=?",(title,))
 		self.conn.commit()

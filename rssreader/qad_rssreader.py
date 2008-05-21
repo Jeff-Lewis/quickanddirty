@@ -52,7 +52,7 @@ if len(sys.argv)>1:
 
 def p(msg):
 	if (_DEBUG):
-		print msg
+		print f(msg)
 		
 
 def f(data):
@@ -61,6 +61,7 @@ def f(data):
 def rss_feed(feed,feedid):
 	d = feedparser.parse(feed)
 	db.write_stamp_feed(feed)
+	db.update_feedtitle(feed,d.channel.title)
 	feeds = db.read_newslinks()
 	p("Total items: "+str(len(feeds)))
 	for entry in d.entries:
