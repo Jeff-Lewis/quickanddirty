@@ -22,21 +22,23 @@ import rss_db,rss_config
 import ftplib
 
 class html_generator(object):
-	def __init__(self,filename="index.html"):
+	def __init__(self,filename="index.html",title="Quick And Dirty RSS Reader"):
 		self.c = rss_config.Config()
 		self.f = open(filename,"w")
 		self.conf = self.c.read_conf()
 		self.db = rss_db.db_connection(self.conf[0])
+		self.title = title
+		
 	def format(self,data):
 		return data.encode("latin1","ignore")
 	def write(self,line):
 		self.f.write(self.format(line))
 		
 	def html_header(self):
-		self.write("<html>\n<head>\n<title>Quick And Dirty RSS Reader</title>")
+		self.write("<html>\n<head>\n<title>"+self.title+"</title>")
 		self.write("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />")
 		self.write("</head>\n<body>\n")
-		self.write("<h1>Quick And Dirty RSS Reader</h1>\n")
+		self.write("<h1>"+self.title+"</h1>\n")
 		
 	def html_footer(self):
 		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
@@ -56,18 +58,18 @@ class html_generator(object):
 			feedname = self.db.read_feedname(feedid)
 			feedurl = self.db.read_feedurl(feedid)
 			if (image):
-				self.write("<td>"+date+"</td><td>")
+				self.write("<td><a href=\""+url+"\">"+title+"</a></td><td>")
 				self.write("<a href=\""+feedurl+"\">")
 				self.write("<img src=\""+image+"\" alt=\""+feedname+"\" />")
 				self.write("</a>")
-				self.write("</td><td><a href=\""+url+"\">"+title+"</a></td>")
+				self.write("</td><td>"+date+"</td>")
 			else:
-				self.write("<td>"+date+"</td><td>")
+				self.write("<td><a href=\""+url+"\">"+title+"</a></td><td>")
 				self.write("<a href=\""+feedurl+"\">")
 				self.write(feedname)
 				self.write("</a>")
-				self.write("</td><td><a href=\""+url+"\">"+title+"</a></td>")
-			self.write("</tr>\n")
+				self.write("</td><td>"+date+"</td>")
+			self.write("\n</tr>\n")
 		self.write("</table>\n")
 		self.html_footer()
 			

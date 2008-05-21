@@ -127,7 +127,7 @@ if __name__ == "__main__":
 		
 		if (len(newslinks)!=len(db.read_newslinks())):
 			p("Generating html file.")
-			www = rss_www.html_generator()
+			www = rss_www.html_generator(title=c.get("HTML","title"))
 			www.html()
 			del www
 

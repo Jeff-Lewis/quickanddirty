@@ -47,6 +47,7 @@ class Config(object):
 		self.conf.set("FTP","server","your_server")
 		self.conf.add_section("HTML")
 		self.conf.set("HTML","filename","index.html")
+		self.conf.set("HTML","title","Quick And Dirty RSS Reader")
 		f = open(self.conf_path,"w")
 		self.conf.write(f)
 		f.close()
