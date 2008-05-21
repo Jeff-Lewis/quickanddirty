@@ -119,13 +119,13 @@ if __name__ == "__main__":
 		newslinks = db.read_newslinks()
 		feeds = db.read_feeds(db_things[1])
 	
-		#for feed in feeds:
-		#	p("")
-		#	p("Reading feed: "+feed[1])
-		#	p("Feed id: "+str(feed[2]))
-		#	rss_feed(feed[0],feed[2])
+		for feed in feeds:
+			p("")
+			p("Reading feed: "+feed[1])
+			p("Feed id: "+str(feed[2]))
+			rss_feed(feed[0],feed[2])
 		
-		if (len(newslinks)==len(db.read_newslinks())):
+		if (len(newslinks)!=len(db.read_newslinks())):
 			p("Generating html file.")
 			www = rss_www.html_generator()
 			www.html(feeds=db.read_news())
@@ -143,6 +143,7 @@ if __name__ == "__main__":
 			p("Uploading to "+server)
 			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path)
 			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path+"/rss",filename="rss.xml")
+			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path,filename="style.css")
 		p("Sleeping for "+str(db_things[3])+" seconds")
 		time.sleep(db_things[3])
 
