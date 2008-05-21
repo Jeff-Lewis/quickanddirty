@@ -22,12 +22,13 @@ import rss_db,rss_config
 import ftplib
 
 class html_generator(object):
-	def __init__(self,filename="index.html",title="Quick And Dirty RSS Reader"):
+	def __init__(self,filename="index.html",title="Quick And Dirty RSS Reader",stats=False):
 		self.c = rss_config.Config()
 		self.f = open(filename,"w")
 		self.conf = self.c.read_conf()
 		self.db = rss_db.db_connection(self.conf[0])
 		self.title = title
+		self.stats = stats
 		
 	def format(self,data):
 		return data.encode("latin1","ignore")
@@ -47,7 +48,8 @@ class html_generator(object):
 	def html(self,images=False):
 		feeds = self.db.read_news()
 		self.html_header()
-		self.write("<h2>Total topics in database: "+str(len(feeds))+"</h2>")
+		if (self.stats):
+			self.write("<h2>Total topics in database: "+str(len(feeds))+"</h2>")
 		self.write("<table>\n")
 		for line in feeds:
 			self.write("<tr>\n")
