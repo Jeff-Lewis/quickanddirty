@@ -122,7 +122,7 @@ if __name__ == "__main__":
 			p("Feed id: "+str(feed[2]))
 			rss_feed(feed[0],feed[2])
 		
-		if (True): #(len(newslinks)!=len(db.read_newslinks())):
+		if (len(newslinks)!=len(db.read_newslinks())):
 			p("Generating html file.")
 			www = rss_www.html_generator()
 			www.html()
