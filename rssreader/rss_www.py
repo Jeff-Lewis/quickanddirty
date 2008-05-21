@@ -22,12 +22,13 @@ import rss_db,rss_config
 import ftplib
 
 class html_generator(object):
-	def __init__(self,filename="index.html",title="Quick And Dirty RSS Reader",stats=False):
+	def __init__(self,filename="index.html",stats=False):
 		self.c = rss_config.Config()
 		self.f = open(filename,"w")
 		self.conf = self.c.read_conf()
+		self.description= self.c.get("HTML","description")
+		self.title = self.c.get("HTML","title")
 		self.db = rss_db.db_connection(self.conf[0])
-		self.title = title
 		self.stats = stats
 		
 	def format(self,data):
@@ -36,7 +37,8 @@ class html_generator(object):
 		self.f.write(self.format(line))
 	
 	def rss_header(self):
-		self.write("<rss version=\"0.91\">\n")
+		self.write("<?xml version=\"1.0\"?>")
+		self.write("<rss version=\"2.0\">\n")
 		self.write("<channel>\n")
 		self.write("<title>"+self.title+"</title>\n")
 		self.write("<description>"+self.description+"</description>\n")
@@ -48,7 +50,7 @@ class html_generator(object):
 			date,title,url,feedid = line
 			self.write("<title>"+title+"</title>\n")
 			self.write("<link>"+url+"</link>\n")
-			self.write("<date>"+date+"</date>\n")
+			self.write("<pubDate>"+date+"</pubDate>\n")
 			self.write("</item>\n")
 		self.rss_footer()
 		
@@ -61,6 +63,7 @@ class html_generator(object):
 		self.write("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />")
 		self.write("</head>\n<body>\n")
 		self.write("<h1>"+self.title+"</h1>\n")
+		self.write("<h5>"+self.description+"</h5>\n")
 		
 	def html_footer(self):
 		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
