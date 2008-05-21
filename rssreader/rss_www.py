@@ -36,6 +36,9 @@ class html_generator(object):
 	def write(self,line):
 		self.f.write(self.format(line))
 	
+	def rss_f(self,msg):
+		return msg.replace("&","").replace("<","").replace(">","")
+		
 	def rss_header(self):
 		self.write("<?xml version=\"1.0\"?>")
 		self.write("<rss version=\"2.0\">\n")
@@ -48,8 +51,8 @@ class html_generator(object):
 		for line in feeds:
 			self.write("<item>\n")
 			date,title,url,feedid = line
-			self.write("<title>"+title+"</title>\n")
-			self.write("<link>"+url+"</link>\n")
+			self.write("<title>"+self.rss_f(title)+"</title>\n")
+			self.write("<link>"+self.rss_f(url)+"</link>\n")
 			self.write("<pubDate>"+date+"</pubDate>\n")
 			self.write("</item>\n")
 		self.rss_footer()
