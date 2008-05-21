@@ -37,8 +37,8 @@ class Config(object):
 	def default_conf(self):
 		self.conf.add_section("DATABASE")
 		self.conf.set("DATABASE","path",os.getcwd()+os.sep+"qad_rssreader.db")
-		self.conf.set("DATABASE","config_table","config")
-		self.conf.set("DATABASE","feed_table","feeds")
+		self.conf.set("DATABASE","config_table","rssfeeds")
+		self.conf.set("DATABASE","feed_table","rsstopics")
 		self.conf.set("DATABASE","cycle","300")
 		self.conf.add_section("FTP")
 		self.conf.set("FTP","path","/")
