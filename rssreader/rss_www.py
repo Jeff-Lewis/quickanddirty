@@ -49,8 +49,12 @@ class html_generator(object):
 		for line in feeds:
 			self.write("<tr>\n")
 			date,title,url,feedid = line
+			image = self.db.read_feedimage(feedid)
 			feedname = self.db.read_feedname(feedid)
-			self.write("<td>"+date+"</td><td>"+feedname+"</td><td><a href=\""+url+"\">"+title+"</a></td>")
+			if (image):
+				self.write("<td>"+date+"</td><td><img src=\""+image+"\" alt=\""+feedname+"\" /></td><td><a href=\""+url+"\">"+title+"</a></td>")
+			else:
+				self.write("<td>"+date+"</td><td>"+feedname+"</td><td><a href=\""+url+"\">"+title+"</a></td>")
 			self.write("</tr>\n")
 		self.write("</table>\n")
 		self.html_footer()

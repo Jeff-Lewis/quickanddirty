@@ -62,6 +62,12 @@ def rss_feed(feed,feedid):
 	d = feedparser.parse(feed)
 	db.write_stamp_feed(feed)
 	db.update_feedtitle(feed,d.channel.title)
+	try:
+		db.update_feedimage(feedid,d.channel.image)
+		print "Feed image available!"
+	except AttributeError:
+		print "No image available!"
+		pass #no image available
 	feeds = db.read_newslinks()
 	p("Total items: "+str(len(feeds)))
 	for entry in d.entries:
@@ -116,7 +122,7 @@ if __name__ == "__main__":
 			p("Feed id: "+str(feed[2]))
 			rss_feed(feed[0],feed[2])
 		
-		if (len(newslinks)!=len(db.read_newslinks())):
+		if (True): #(len(newslinks)!=len(db.read_newslinks())):
 			p("Generating html file.")
 			www = rss_www.html_generator()
 			www.html()

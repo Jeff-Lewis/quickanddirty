@@ -35,7 +35,7 @@ class db_connection(object):
 		self.close()
 		
 	def default_db(self):
-		self.cursor.execute("create table rssfeeds (feed,time,title)")
+		self.cursor.execute("create table rssfeeds (feed,time,title,image)")
 		self.cursor.execute("create table rsstopics (time,title,link,feedid)")
 #		self.insert_new_feed()
 		self.insert_new_feed(feedurl="http://rss.slashdot.org/Slashdot/slashdot",title="Slashdot")
@@ -61,6 +61,10 @@ class db_connection(object):
 	
 	def read_feedname(self,feedid):
 		self.cursor.execute("select title from rssfeeds where rowid="+str(feedid))
+		return self.cursor.fetchone()[0]
+		
+	def read_feedimage(self,feedid):
+		self.cursor.execute("select image from rssfeeds where rowid="+str(feedid))
 		return self.cursor.fetchone()[0]
 		
 	def read_newslinks(self):
@@ -91,10 +95,18 @@ class db_connection(object):
 	def write_stamp_feed(self,feed):
 		self.cursor.execute("update rssfeeds set time=datetime('now') where feed=?",(feed,))
 		self.conn.commit()
-	def update_feedtitle(self,feed,title):
-		self.cursor.execute("update rssfeeds set title='"+title+"' where feed=?",(feed,))	
+		
+	def update_feedtitle(self,feedid,title):
+		self.cursor.execute("update rssfeeds set title='"+title+"' where rowid=?",(str(feedid),))	
 		self.conn.commit()
-
+		
+	def update_feedimage(self,feedid,image):
+		if (image.href):
+			self.cursor.execute("update rssfeeds set image='"+str(image.href)+"' where rowid=?",(str(feedid),))	
+		if (image.url):
+			self.cursor.execute("update rssfeeds set image='"+str(image.url)+"' where rowid=?",(str(feedid),))	
+		self.conn.commit()
+		
 	def write_stamp_news(self,title,link):
 		self.cursor.execute("update rsstopics set time=datetime('now') where title=?",(title,))
 		self.conn.commit()
