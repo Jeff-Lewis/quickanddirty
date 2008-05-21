@@ -45,7 +45,7 @@ class html_generator(object):
 	def html(self):
 		feeds = self.db.read_news()
 		self.html_header()
-		self.write("<h2>Total topics in database: "+len(feeds)+"</h2>")
+		self.write("<h2>Total topics in database: "+str(len(feeds))+"</h2>")
 		self.write("<table>\n")
 		for line in feeds:
 			self.write("<tr>\n")
