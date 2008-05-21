@@ -61,12 +61,15 @@ def f(data):
 def rss_feed(feed,feedid):
 	d = feedparser.parse(feed)
 	db.write_stamp_feed(feed)
-	db.update_feedtitle(feed,d.channel.title)
+	try:
+		db.update_feedtitle(feed,d.channel.title)
+	except AttributeError:
+		pass
 	try:
 		db.update_feedimage(feedid,d.channel.image)
-		print "Feed image available!"
+#		print "Feed image available!"
 	except AttributeError:
-		print "No image available!"
+#		print "No image available!"
 		pass #no image available
 	feeds = db.read_newslinks()
 	p("Total items: "+str(len(feeds)))

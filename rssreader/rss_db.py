@@ -67,6 +67,10 @@ class db_connection(object):
 		self.cursor.execute("select image from rssfeeds where rowid="+str(feedid))
 		return self.cursor.fetchone()[0]
 		
+	def read_feedurl(self,feedid):
+		self.cursor.execute("select feed from rssfeeds where rowid="+str(feedid))
+		return self.cursor.fetchone()[0]		
+		
 	def read_newslinks(self):
 		self.cursor.execute("select link from rsstopics")
 		self.answer2 = self.cursor.fetchall()
