@@ -42,7 +42,7 @@ class html_generator(object):
 		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
 		self.write("</body>\n</html>\n")
 		
-	def html(self):
+	def html(self,images=False):
 		feeds = self.db.read_news()
 		self.html_header()
 		self.write("<h2>Total topics in database: "+str(len(feeds))+"</h2>")
@@ -50,7 +50,9 @@ class html_generator(object):
 		for line in feeds:
 			self.write("<tr>\n")
 			date,title,url,feedid = line
-			image = self.db.read_feedimage(feedid)
+			image = False
+			if (images):
+				image = self.db.read_feedimage(feedid)
 			feedname = self.db.read_feedname(feedid)
 			feedurl = self.db.read_feedurl(feedid)
 			if (image):
