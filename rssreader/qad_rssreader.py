@@ -141,7 +141,7 @@ if __name__ == "__main__":
 			password = c.get("FTP","password")
 			path = c.get("FTP","path")
 			p("Uploading to "+server)
-			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path)
+			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path,filename="index.php")
 			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path+"/rss",filename="rss.xml")
 			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path,filename="style.css")
 		p("Sleeping for "+str(db_things[3])+" seconds")

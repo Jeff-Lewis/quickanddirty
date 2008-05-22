@@ -22,7 +22,7 @@ import rss_db,rss_config
 import ftplib
 
 class html_generator(object):
-	def __init__(self,filename="index.html",stats=False):
+	def __init__(self,filename="index.php",stats=False):
 		self.c = rss_config.Config()
 		self.f = open(filename,"w")
 		self.conf = self.c.read_conf()
@@ -62,6 +62,7 @@ class html_generator(object):
 		self.write("</rss>")
 		
 	def html_header(self):
+		self.write("<? include('show.php'); ?>\n");
 		self.write("<html>\n<head>\n<title>"+self.title+"</title>")
 		self.write("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />")
 		self.write("</head>\n<body>\n")
@@ -86,17 +87,18 @@ class html_generator(object):
 			feedname = self.db.read_feedname(feedid)
 			feedurl = self.db.read_feedurl(feedid)
 			if (image):
-				self.write("<td><a href=\""+url+"\">"+title+"</a></td><td>")
+				self.write("<td><a href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
 				self.write("<a href=\""+feedurl+"\">")
 				self.write("<img src=\""+image+"\" alt=\""+feedname+"\" />")
 				self.write("</a>")
 				self.write("</td><td>"+date+"</td>")
 			else:
-				self.write("<td><a href=\""+url+"\">"+title+"</a></td><td>")
+				self.write("<td><a href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
 				self.write("<a href=\""+feedurl+"\">")
 				self.write(feedname)
 				self.write("</a>")
 				self.write("</td><td>"+date+"</td>")
+			self.write("<td><?=hitcounter('"+url+"'); ?></td>");
 			self.write("\n</tr>\n")
 		self.write("</table>\n")
 		self.html_footer()
