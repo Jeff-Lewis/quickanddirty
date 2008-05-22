@@ -71,7 +71,7 @@ class html_generator(object):
 		self.write("<h5>"+self.description+"</h5>\n")
 		
 	def html_footer(self):
-		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
+		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a target=\"_blank\" href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
 		self.write("</body>\n</html>\n")
 		
 	def html(self,feeds,images=False):
@@ -88,14 +88,14 @@ class html_generator(object):
 			feedname = self.db.read_feedname(feedid)
 			feedurl = self.db.read_feedurl(feedid)
 			if (image):
-				self.write("<td><a href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
-				self.write("<a href=\""+feedurl+"\">")
+				self.write("<td><a target=\"_blank\" href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
+				self.write("<a target=\"_blank\" href=\""+feedurl+"\">")
 				self.write("<img src=\""+image+"\" alt=\""+feedname+"\" />")
 				self.write("</a>")
 				self.write("</td><td>"+date+"</td>")
 			else:
-				self.write("<td><a href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
-				self.write("<a href=\""+feedurl+"\">")
+				self.write("<td><a target=\"_blank\" href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
+				self.write("<a target=\"_blank\"  href=\""+feedurl+"\">")
 				self.write(feedname)
 				self.write("</a>")
 				self.write("</td><td>"+date+"</td>")
