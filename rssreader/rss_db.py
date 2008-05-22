@@ -51,12 +51,9 @@ class db_connection(object):
 		self.cursor.execute("insert into rssfeeds(feed,time,title) values ('"+feedurl+"',datetime('now'),'"+title+"')")
 		
 	def read_feeds(self,table):
-		
 		self.query = "select feed,title,rowid from "+table
-		
 		self.cursor.execute(self.query)
 		self.answer = self.cursor.fetchall()
-		
 		return self.answer
 	
 	def read_feedname(self,feedid):
@@ -70,6 +67,9 @@ class db_connection(object):
 	def read_feedurl(self,feedid):
 		self.cursor.execute("select feed from rssfeeds where rowid="+str(feedid))
 		return self.cursor.fetchone()[0]		
+		
+	def delete_feed(self,feedid):
+		self.cursor.execute("delete from rssfeeds where rowid="+str(feedid))
 		
 	def read_newslinks(self):
 		self.cursor.execute("select link from rsstopics")
