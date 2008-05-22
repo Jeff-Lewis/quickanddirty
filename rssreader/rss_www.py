@@ -65,6 +65,7 @@ class html_generator(object):
 		self.write("<? include('show.php'); ?>\n");
 		self.write("<html>\n<head>\n<title>"+self.title+"</title>")
 		self.write("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />")
+		self.write("<meta http-equiv=\"refresh\" content=\"500;url=http://www.feed.fi\">")
 		self.write("</head>\n<body>\n")
 		self.write("<h1>"+self.title+"</h1>\n")
 		self.write("<h5>"+self.description+"</h5>\n")
