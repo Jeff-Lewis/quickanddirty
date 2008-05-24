@@ -19,7 +19,16 @@
 # Version 0.2
 ############################################################################
 import rss_db,rss_config
-from templates.default import *
+import sys
+
+if (rss_config.Config().get("HTML","template")=="default"):
+	from templates.default import *
+elif(rss_config.Config().get("HTML","template")=="rss"):
+	from templates.rss import *
+else:
+	print "No Template selected!"
+	print rss_config.Config().get("HTML","template")
+	sys.exit(0)
 
 class document(object):
 	def __init__(self,filename="index.php"):
@@ -31,6 +40,7 @@ class document(object):
 		
 	def format(self,data):
 		return data.encode("latin1","ignore")
+
 	def write(self,line):
 		self.f.write(self.format(line))
 		
