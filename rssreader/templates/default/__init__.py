@@ -2,4 +2,4 @@
 
 _FILES = ["show.php"]
 
-__all__ = ["html"]
+__all__ = ["structure"]
