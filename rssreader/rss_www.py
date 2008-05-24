@@ -22,7 +22,7 @@ import rss_db,rss_config
 import sys
 
 if (rss_config.Config().get("HTML","template")=="default"):
-	from templates.default import *
+	from templates.default import *	
 elif(rss_config.Config().get("HTML","template")=="rss"):
 	from templates.rss import *
 else:
@@ -30,8 +30,11 @@ else:
 	print rss_config.Config().get("HTML","template")
 	sys.exit(0)
 
+print "Selected Template: "+structure.layout().name()
+
+
 class document(object):
-	def __init__(self,filename="index.php"):
+	def __init__(self,filename=structure.layout().filename()):
 		self.template = structure.layout()
 		self.c = rss_config.Config()
 		self.f = open(filename,"w")
@@ -40,7 +43,12 @@ class document(object):
 		
 	def format(self,data):
 		return data.encode("latin1","ignore")
-
+		
+	def files(self):
+		return self.template.files()
+	def name(self):
+		return self.template.name()
+		
 	def write(self,line):
 		self.f.write(self.format(line))
 		

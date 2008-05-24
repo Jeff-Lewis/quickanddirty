@@ -11,6 +11,14 @@ class layout:
 	
 	def __init__(self):
 		self.init("default title","default addr","default desc","default footer")
+	def name(self):
+		return "Simple XML Document"
+	def filename(self):
+		return "index.xml"
+	def files(self):
+		retval = []
+		retval.append("index.xml")
+		return retval
 		
 	def header(self):
 		retval = ""

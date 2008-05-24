@@ -127,23 +127,29 @@ if __name__ == "__main__":
 		
 		if (len(newslinks)!=len(db.read_newslinks())):
 			p("Generating html file.")
-			www = rss_www.document()
+			tmpfolder = c.get("GENERAL","tempfolder")
+			if (os.path.exists(tmpfolder)==False):
+				os.mkdir(tmpfolder)
+			localfile = tmpfolder+c.get("HTML","filename")
+			www = rss_www.document(filename=localfile)
 			www.generate(feeds=db.read_news())
+			otherfiles = www.files()
 			del www
-			
-			#p("Generating rss feed.")
-			#rss = rss_www.html_generator(filename="rss.xml")
-			#rss.rss(feeds=db.read_news())
-			#del rss
+#			print otherfiles
 			
 			server = c.get("FTP","server")
 			username = c.get("FTP","username")
 			password = c.get("FTP","password")
 			path = c.get("FTP","path")
 			p("Uploading to "+server)
-			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path,filename="index.php")
-			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path+"/rss",filename="rss.xml")
-			up = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path,filename="style.css")
+			ftp = rss_ftp.ftp_upload(server=server,username=username,password=password,path=path)
+			print localfile
+			ftp.upload(localfile)
+			for filen in otherfiles:
+				print filen
+				ftp.upload(filen)
+			del ftp
+						
 		p("Sleeping for "+str(db_things[3])+" seconds")
 		time.sleep(db_things[3])
 

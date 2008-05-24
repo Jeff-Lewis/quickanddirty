@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import rss_db
 
-
 class layout:
 	def init(self,title,addr,desc,footer):
 		self._TITLE = title
@@ -11,6 +10,9 @@ class layout:
 	
 	def __init__(self):
 		self.init("default title","default addr","default desc","default footer")
+	
+	def name(self):
+		return "Default HTML Document"
 		
 	def header(self):
 		retval = ""
@@ -46,3 +48,12 @@ class layout:
 			retval += "\n</tr>\n"
 		retval += "</table>\n"
 		return retval
+		
+	def files(self):
+		retval = []
+		retval.append("templates/default/show.php")
+		retval.append("templates/default/style.css")
+		return retval
+
+	def filename(self):
+		return "index.php"

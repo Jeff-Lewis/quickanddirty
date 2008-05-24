@@ -19,15 +19,18 @@
 # Version 0.2
 ############################################################################
 import ftplib
+import os
 
 class ftp_upload(object):
-	def __init__(self,username,password,server,path,filename="index.html"):
-		ftp = ftplib.FTP(server)
-		ftp.login(username,password)
+	def __init__(self,username,password,server,path):
+		self.ftp = ftplib.FTP(server)
+		self.ftp.login(username,password)
+		self.ftp.cwd(path)
+		
+	def upload(self,filename):
 		f = open(filename,"rb")
-		ftp.cwd(path)
-		ftp.storbinary("STOR "+filename,f)
+		self.ftp.storbinary("STOR "+os.path.basename(filename),f)
 		f.close()
-		ftp.quit()
+		
 	def __del__(self):
-		pass
+		self.ftp.quit()

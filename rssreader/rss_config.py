@@ -35,6 +35,8 @@ class Config(object):
 		return self.conf.get(section,key)
 		
 	def default_conf(self):
+		self.conf.add_section("GENERAL")
+		self.conf.set("GENERAL","tempfolder","./tmp/")
 		self.conf.add_section("DATABASE")
 		self.conf.set("DATABASE","path",os.getcwd()+os.sep+"qad_rssreader.db")
 		self.conf.set("DATABASE","config_table","rssfeeds")
