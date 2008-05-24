@@ -19,90 +19,25 @@
 # Version 0.2
 ############################################################################
 import rss_db,rss_config
-import ftplib
+from templates.default import *
 
-class html_generator(object):
-	def __init__(self,filename="index.php",stats=False):
+class document(object):
+	def __init__(self,filename="index.php"):
+		self.template = structure.layout()
 		self.c = rss_config.Config()
 		self.f = open(filename,"w")
-		self.conf = self.c.read_conf()
-		self.description= self.c.get("HTML","description")
-		self.title = self.c.get("HTML","title")
-		self.db = rss_db.db_connection(self.conf[0])
-		self.stats = stats
+		self.db = rss_db.db_connection(self.c.get("DATABASE","path"))
+		self.template.init(title=self.c.get("HTML","title"),desc=self.c.get("HTML","description"),addr=self.c.get("HTML","baseaddress"),footer=self.c.get("HTML","footer"))
 		
 	def format(self,data):
 		return data.encode("latin1","ignore")
 	def write(self,line):
 		self.f.write(self.format(line))
-	
-	def rss_f(self,msg):
-		return msg.replace("&","").replace("<","").replace(">","")
 		
-	def rss_header(self):
-		self.write("<?xml version=\"1.0\"?>")
-		self.write("<rss version=\"2.0\">\n")
-		self.write("<channel>\n")
-		self.write("<title>"+self.title+"</title>\n")
-		self.write("<description>"+self.description+"</description>\n")
-	
-	def rss(self,feeds):
-		self.rss_header()
-		for line in feeds:
-			self.write("<item>\n")
-			date,title,url,feedid = line
-			self.write("<title>"+self.rss_f(title)+"</title>\n")
-			self.write("<link>"+self.rss_f(url)+"</link>\n")
-			self.write("<pubDate>"+date+"</pubDate>\n")
-			self.write("</item>\n")
-		self.rss_footer()
-		
-	def rss_footer(self):
-		self.write("</channel>")
-		self.write("</rss>")
-		
-	def html_header(self):
-		self.write("<? include('show.php'); ?>\n");
-		self.write("<html>\n<head>\n<title>"+self.title+"</title>")
-		self.write("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />")
-		self.write("<meta http-equiv=\"refresh\" content=\"500;url=http://www.feed.fi\">")
-		self.write("</head>\n<body>\n")
-		self.write("<h1>"+self.title+"</h1>\n")
-		self.write("<h5>"+self.description+"</h5>\n")
-		
-	def html_footer(self):
-		self.write("<br />&copy; 2008 Juhapekka Piiroinen & Petri Ilmarinen - <a target=\"_blank\" href=\"http://code.google.com/p/quickanddirty\">QuickAndDirty</a> -project\n")
-		self.write("</body>\n</html>\n")
-		
-	def html(self,feeds,images=False):
-		self.html_header()
-		if (self.stats):
-			self.write("<h2>Total topics in database: "+str(len(feeds))+"</h2>")
-		self.write("<table>\n")
-		for line in feeds:
-			self.write("<tr>\n")
-			date,title,url,feedid = line
-			image = False
-			if (images):
-				image = self.db.read_feedimage(feedid)
-			feedname = self.db.read_feedname(feedid)
-			feedurl = self.db.read_feedurl(feedid)
-			if (image):
-				self.write("<td><a target=\"_blank\" href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
-				self.write("<a target=\"_blank\" href=\""+feedurl+"\">")
-				self.write("<img src=\""+image+"\" alt=\""+feedname+"\" />")
-				self.write("</a>")
-				self.write("</td><td>"+date+"</td>")
-			else:
-				self.write("<td><a target=\"_blank\" href=\"redirect.php?url="+url+"\">"+title+"</a></td><td>")
-				self.write("<a target=\"_blank\"  href=\""+feedurl+"\">")
-				self.write(feedname)
-				self.write("</a>")
-				self.write("</td><td>"+date+"</td>")
-			self.write("<td><?=hitcounter('"+url+"'); ?></td>");
-			self.write("\n</tr>\n")
-		self.write("</table>\n")
-		self.html_footer()
+	def generate(self,feeds):
+		self.write(self.template.header())
+		self.write(self.template.content(feeds,self.db))
+		self.write(self.template.footer())
 			
 	def __del__(self):
 		self.db.close()

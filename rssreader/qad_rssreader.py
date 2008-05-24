@@ -127,14 +127,14 @@ if __name__ == "__main__":
 		
 		if (len(newslinks)!=len(db.read_newslinks())):
 			p("Generating html file.")
-			www = rss_www.html_generator()
-			www.html(feeds=db.read_news())
+			www = rss_www.document()
+			www.generate(feeds=db.read_news())
 			del www
 			
-			p("Generating rss feed.")
-			rss = rss_www.html_generator(filename="rss.xml")
-			rss.rss(feeds=db.read_news())
-			del rss
+			#p("Generating rss feed.")
+			#rss = rss_www.html_generator(filename="rss.xml")
+			#rss.rss(feeds=db.read_news())
+			#del rss
 			
 			server = c.get("FTP","server")
 			username = c.get("FTP","username")
