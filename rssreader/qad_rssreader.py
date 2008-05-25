@@ -53,6 +53,10 @@ if len(sys.argv)>1:
 def p(msg):
 	if (_DEBUG):
 		print f(msg)
+
+def notify(topic,msg):
+	if (rss_config.Config().get("NOTIFICATIONS","enabled")=="1"):
+		notification_id = notifications_interface.Notify("qad_rssreader", 0, '', topic, msg, dbus.Array([], signature='s'), dbus.Array([], signature='(sv)'), -1)
 		
 
 def f(data):
@@ -80,6 +84,7 @@ def rss_feed(feed,feedid):
 			#	db.write_stamp_news(entry.title,entry.link)
 			#else:
 			p("Adding new link "+entry.link)
+			notify(entry.title,entry.link)
 			db.write_table(entry.title,entry.link,feedid)
 
 if __name__ == "__main__":
@@ -110,6 +115,15 @@ if __name__ == "__main__":
         		sys.exit(1)
 
 	p("Starting qad_rssreader..")
+	if (rss_config.Config().get("NOTIFICATIONS","enabled")=="1"):
+		try:
+			import dbus
+			session_bus = dbus.SessionBus()
+			notifications_object = session_bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
+			notifications_interface = dbus.Interface(notifications_object, 'org.freedesktop.Notifications')
+		except dbus.DBusException, e:
+			print "Error: %s" % str(e)
+			rss_config.Config().set("NOTIFICATIONS","enabled","0")
 	while 1:
 
 		c = rss_config.Config()

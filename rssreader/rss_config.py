@@ -33,10 +33,15 @@ class Config(object):
 	
 	def get(self,section,key):
 		return self.conf.get(section,key)
+	
+	def set(self,section,key,value):
+		return self.conf.set(section,key,value)
 		
 	def default_conf(self):
 		self.conf.add_section("GENERAL")
 		self.conf.set("GENERAL","tempfolder","./tmp/")
+		self.conf.add_section("NOTIFICATIONS")
+		self.conf.set("NOTIFICATIONS","enabled","0")
 		self.conf.add_section("DATABASE")
 		self.conf.set("DATABASE","path",os.getcwd()+os.sep+"qad_rssreader.db")
 		self.conf.set("DATABASE","config_table","rssfeeds")
