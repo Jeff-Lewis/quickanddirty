@@ -24,12 +24,18 @@ import os
 class ftp_upload(object):
 	def __init__(self,username,password,server,path):
 		self.ftp = ftplib.FTP(server)
-		self.ftp.login(username,password)
+		try:
+			self.ftp.login(username,password)
+		except EOFError,e:
+			print "Error: %s" % str(e)
 		self.ftp.cwd(path)
 		
 	def upload(self,filename):
 		f = open(filename,"rb")
-		self.ftp.storbinary("STOR "+os.path.basename(filename),f)
+		try:
+			self.ftp.storbinary("STOR "+os.path.basename(filename),f)
+		except EOFError,e:
+			print "Error: %s" % str(e)
 		f.close()
 		
 	def __del__(self):

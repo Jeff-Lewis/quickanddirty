@@ -77,15 +77,13 @@ def rss_feed(feed,feedid):
 		pass #no image available
 	feeds = db.read_newslinks()
 	p("Total items: "+str(len(feeds)))
+	news = ""
 	for entry in d.entries:
-		#print entry.link in feeds
 		if not entry.link in feeds:
-			#print "Updating timestamp for "+entry.link
-			#	db.write_stamp_news(entry.title,entry.link)
-			#else:
 			p("Adding new link "+entry.link)
-			notify(entry.title,entry.link)
 			db.write_table(entry.title,entry.link,feedid)
+			news = "<a href=\""+entry.link+"\">"+entry.title+"</a>"
+			notify(d.channel.title,news)
 
 if __name__ == "__main__":
 	if not _DEBUG:
