@@ -121,7 +121,6 @@ if __name__ == "__main__":
 			notifications_interface = dbus.Interface(notifications_object, 'org.freedesktop.Notifications')
 		except dbus.DBusException, e:
 			print "Error: %s" % str(e)
-			rss_config.Config().set("NOTIFICATIONS","enabled","0")
 	while 1:
 
 		c = rss_config.Config()
