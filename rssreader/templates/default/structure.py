@@ -14,21 +14,37 @@ class layout:
 	def name(self):
 		return "Default HTML Document"
 		
-	def header(self):
+	def get_refresh(self):
+		return "<meta http-equiv=\"refresh\" content=\"500;url="+self._ADDR+"\">"
+		
+	def get_menu(self,db):
+		feeds = db.read_allfeeds()
+		retval = ""
+		for item in feeds:
+			print retval
+			try:
+				retval += "<a class=\"info\" href=\""+item[1]+"\" alt=\""+item[3]+"\"><img border=\"0\" src=\""+item[4]+"\" alt=\""+item[3]+"\" width=\"16\" height=\"16\" /><span>"+item[3]+"</span></a><br />"
+			except TypeError:
+				retval += "<a class=\"info\" href=\""+item[1]+"\">"+item[3]+"</a><br />"
+		return retval
+		
+	def header(self,db=None):
 		retval = ""
 		retval += "<? include('show.php'); ?>\n"
 		retval += "<html>\n<head>\n<title>"+self._TITLE+"</title>"
 		retval += "<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\" />"
-		retval += "<meta http-equiv=\"refresh\" content=\"500;url="+self._ADDR+"\">"
+		retval += self.get_refresh()
 		retval += "</head>\n<body>\n"
-		retval += "<h1>"+self._TITLE+"</h1>\n"
-		retval += "<h5>"+self._DESC+"</h5>\n"
+		retval += "<div id=\"main\">\n<div id=\"left\">"
+		if db:
+			retval += self.get_menu(db)
+		retval += "</div>\n<div id=\"right\">"
 		return retval
-
+	
 	def footer(self):
-		retval = ""
-		retval += "<br />"+self._FOOTER+"<br />\n"
-		retval += "</body>\n</html>\n"
+		retval = "</div></div>"
+		retval += "<!-- "+self._FOOTER+" -->\n"
+		retval += "\n</body>\n</html>\n"
 		return retval
 
 	def content(self,feeds,db):
@@ -52,6 +68,7 @@ class layout:
 	def files(self):
 		retval = []
 		retval.append("templates/default/show.php")
+		#retval.append("templates/default/redirect.php")
 		retval.append("templates/default/style.css")
 		return retval
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 ##############################################################################
-#    qad_rssreader_list.py is a part of qad_rssreader
+#    qad_rssreader_delete.py is a part of qad_rssreader
 #    Copyright (C) 2008  Juhapekka Piiroinen & Petri Ilmarinen
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,12 +21,16 @@
 import rss_db
 import sys
 
-def f(msg):
-	return msg.encode("latin-1","ignore")
+args = sys.argv
 
-db = rss_db.db_connection()
-feeds = db.read_feeds(table="rssfeeds")
-for feed in feeds:
-	print str(feed[2])+") "+f(feed[1])+" ("+f(feed[0])+") "
-db.close()
-
+if len(args)>1:
+	db = rss_db.db_connection()
+	try:
+		print "current image was "+db.read_feedimage(feedid=args[1])
+	except TypeError:
+		print "image was not set."
+	db.update_feedimage_raw(feedid=args[1], image=args[2])
+	print "current image is now "+db.read_feedimage(feedid=args[1])
+	db.close()
+else:
+	print "USAGE: ./qad_rssreader_image.py id1 id2 id3 id4.."

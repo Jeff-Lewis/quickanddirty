@@ -30,7 +30,7 @@ else:
 	print rss_config.Config().get("HTML","template")
 	sys.exit(0)
 
-print "Selected Template: "+structure.layout().name()
+#print "Selected Template: "+structure.layout().name()
 
 
 class document(object):
@@ -53,7 +53,7 @@ class document(object):
 		self.f.write(self.format(line))
 		
 	def generate(self,feeds):
-		self.write(self.template.header())
+		self.write(self.template.header(self.db))
 		self.write(self.template.content(feeds,self.db))
 		self.write(self.template.footer())
 			

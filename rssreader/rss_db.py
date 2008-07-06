@@ -50,6 +50,12 @@ class db_connection(object):
 	def insert_new_feed(self,feedurl="http://www.iltalehti.fi/rss/rss.xml",title="Iltalehti"):
 		self.cursor.execute("insert into rssfeeds(feed,time,title) values ('"+feedurl+"',datetime('now'),'"+title+"')")
 		
+	def read_allfeeds(self):
+		self.query = "select rowid,* from rssfeeds"
+		self.cursor.execute(self.query)
+		self.answer = self.cursor.fetchall()
+		return self.answer
+		
 	def read_feeds(self,table):
 		self.query = "select feed,title,rowid from "+table
 		self.cursor.execute(self.query)
@@ -95,7 +101,11 @@ class db_connection(object):
 		except TypeError:
 			self.cursor.execute("insert into rsstopics values (datetime('now'),?,?,?)",(title,link,feedid))
 			self.conn.commit()
-
+	def read_latest(self,amount=10):
+		self.cursor.execute("select * from rsstopics order by time desc limit "+str(amount))
+		self.answer = self.cursor.fetchall()
+		print len(self.answer)
+		return self.answer
 	def write_stamp_feed(self,feed):
 		self.cursor.execute("update rssfeeds set time=datetime('now') where feed=?",(feed,))
 		self.conn.commit()
@@ -109,6 +119,10 @@ class db_connection(object):
 			self.cursor.execute("update rssfeeds set image='"+str(image.href)+"' where rowid=?",(str(feedid),))	
 		if (image.url):
 			self.cursor.execute("update rssfeeds set image='"+str(image.url)+"' where rowid=?",(str(feedid),))	
+		self.conn.commit()
+		
+	def update_feedimage_raw(self,feedid,image):
+		self.cursor.execute("update rssfeeds set image='"+str(image)+"' where rowid=?",(str(feedid),))	
 		self.conn.commit()
 		
 	def write_stamp_news(self,title,link):
