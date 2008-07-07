@@ -101,11 +101,18 @@ class db_connection(object):
 		except TypeError:
 			self.cursor.execute("insert into rsstopics values (datetime('now'),?,?,?)",(title,link,feedid))
 			self.conn.commit()
+			
 	def read_latest(self,amount=10):
 		self.cursor.execute("select * from rsstopics order by time desc limit "+str(amount))
 		self.answer = self.cursor.fetchall()
-		print len(self.answer)
 		return self.answer
+		
+	def read_latestFromFeed(self,feedid,amount=10):
+		self.cursor.execute("select * from rsstopics where feedid="+str(feedid)+" order by time desc limit "+str(amount))
+		self.answer = self.cursor.fetchall()
+
+		return self.answer		
+		
 	def write_stamp_feed(self,feed):
 		self.cursor.execute("update rssfeeds set time=datetime('now') where feed=?",(feed,))
 		self.conn.commit()

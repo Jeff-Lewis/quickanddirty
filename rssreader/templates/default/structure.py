@@ -16,16 +16,16 @@ class layout:
 		
 	def get_refresh(self):
 		return "<meta http-equiv=\"refresh\" content=\"500;url="+self._ADDR+"\">"
-		
+	
 	def get_menu(self,db):
 		feeds = db.read_allfeeds()
 		retval = ""
+		retval += "<a class=\"info\" href=\"http://www.feed.fi\" alt=\"Home\"><img border=\"0\" src=\"home.png\" alt=\"home\" width=\"16\" height=\"16\" /><span>View 100 latest topics</span></a><br />"
 		for item in feeds:
-			print retval
 			try:
-				retval += "<a class=\"info\" href=\""+item[1]+"\" alt=\""+item[3]+"\"><img border=\"0\" src=\""+item[4]+"\" alt=\""+item[3]+"\" width=\"16\" height=\"16\" /><span>"+item[3]+"</span></a><br />"
+				retval += "<a class=\"info\" href=\""+item[3].lower().replace(" ","")+".php\" alt=\""+item[3]+"\"><img border=\"0\" src=\""+item[4]+"\" alt=\""+item[3]+"\" width=\"16\" height=\"16\" /><span>"+item[3]+"</span></a><br />"
 			except TypeError:
-				retval += "<a class=\"info\" href=\""+item[1]+"\">"+item[3]+"</a><br />"
+				retval += "<a class=\"info\" href=\""+item[3].lower().replace(" ","")+".php\">"+item[3]+"</a><br />"
 		return retval
 		
 	def header(self,db=None):
@@ -70,6 +70,7 @@ class layout:
 		retval.append("templates/default/show.php")
 		#retval.append("templates/default/redirect.php")
 		retval.append("templates/default/style.css")
+		retval.append("templates/default/home.png")
 		return retval
 
 	def filename(self):

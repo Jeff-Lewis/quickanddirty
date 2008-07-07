@@ -3,7 +3,7 @@
 ##############################################################################
 # This is a very quick and dirty rss reader with sqlite support
 ##############################################################################
-# This script will read rss feeds
+# This script will read rss feeds (crontab version)
 ##############################################################################
 #    rssreader.py is a script which reads rss feeds
 #    Copyright (C) 2008  Juhapekka Piiroinen & Petri Ilmarinen
@@ -72,8 +72,7 @@ def rss_feed(feed,feedid):
 	except AttributeError:
 		pass
 	try:
-		result = db.read_feedimage(feedid)
-		if result==None:
+		if db.read_feedimage(feedid)==None:
 			db.update_feedimage(feedid,d.channel.image)
 #		print "Feed image available!"
 	except AttributeError:
@@ -91,10 +90,9 @@ def rss_feed(feed,feedid):
 
 if __name__ == "__main__":
 	force = False
-	if len(sys.argv)>2:
-		if sys.argv[2]=="-f":
+	if len(sys.argv)>1:
+		if sys.argv[1]=="-f":
 			force = True
-			
 #	if not _DEBUG:
 #		#do first fork
 #		try: 
@@ -155,11 +153,17 @@ if __name__ == "__main__":
 				os.mkdir(tmpfolder)
 			localfile = tmpfolder+c.get("HTML","filename")
 			www = rss_www.document(filename=localfile)
-			www.generate(feeds=db.read_latest(40))
+			www.generate(feeds=db.read_latest(150))
 			otherfiles = www.files()
 			del www
 #			print otherfiles
-			
+			feeds = db.read_allfeeds()
+			for feed in feeds:
+				filename="tmp/"+feed[3].lower().replace(" ","")+".php"
+				www = rss_www.document(filename=filename)
+				www.generate(feeds=db.read_latestFromFeed(feed[0],amount=100))
+				del www
+				otherfiles.append(filename)
 			server = c.get("FTP","server")
 			username = c.get("FTP","username")
 			password = c.get("FTP","password")
