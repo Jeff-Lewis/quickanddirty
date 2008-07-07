@@ -24,14 +24,35 @@ import os
 class ftp_upload(object):
 	def __init__(self,username,password,server,path):
 		self.ftp = ftplib.FTP(server)
+		self.clearLog()
 		try:
 			self.ftp.login(username,password)
 		except EOFError,e:
 			print "Error: %s" % str(e)
 		self.ftp.cwd(path)
-		
+	
+	def clearLog(self):
+		fout = open("rss_ftp.log","w")
+		fout.write("")
+		fout.close()
+	def appendLog(self,filename):
+		fout = open("rss_ftp.log","a")
+		fout.write(filename+"\n")
+		fout.close()
+	def isTransferred(self,filename):
+		fout = open("rss_ftp.log","r")
+		lines = fout.read().split("\n")
+		fout.close()
+		try:
+			i = lines.index(filename)
+			return True
+		except ValueError:
+			return False
 	def upload(self,filename):
+		if (self.isTransferred(filename)):
+			return
 		f = open(filename,"rb")
+		self.appendLog(filename)
 		try:
 			self.ftp.storbinary("STOR "+os.path.basename(filename),f)
 		except EOFError,e:

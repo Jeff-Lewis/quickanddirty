@@ -1,5 +1,7 @@
 #!/usr/bin/python
 import rss_db
+import urllib2
+import os
 
 class layout:
 	def init(self,title,addr,desc,footer):
@@ -7,10 +9,20 @@ class layout:
 		self._ADDR = addr
 		self._DESC = desc
 		self._FOOTER = footer
+		self._IMAGES = []
 	
 	def __init__(self):
 		self.init("default title","default addr","default desc","default footer")
 	
+	def download(self,url,filename):
+		if (os.path.exists(filename)):
+			return
+		f = urllib2.urlopen(url)
+		fout = open(filename,"wb")
+		fout.write(f.read())
+		fout.close()
+		f.close()
+		
 	def name(self):
 		return "Default HTML Document"
 		
@@ -23,7 +35,11 @@ class layout:
 		retval += "<a class=\"info\" href=\"http://www.feed.fi\" alt=\"Home\"><img border=\"0\" src=\"home.png\" alt=\"home\" width=\"16\" height=\"16\" /><span>View 100 latest topics</span></a><br />"
 		for item in feeds:
 			try:
-				retval += "<a class=\"info\" href=\""+item[3].lower().replace(" ","")+".php\" alt=\""+item[3]+"\"><img border=\"0\" src=\""+item[4]+"\" alt=\""+item[3]+"\" width=\"16\" height=\"16\" /><span>"+item[3]+"</span></a><br />"
+				img = item[3].lower().replace(" ","") + ".ico"
+				if (item[4]):
+					self.download(url=item[4],filename="tmp/"+img)
+				retval += "<a class=\"info\" href=\""+item[3].lower().replace(" ","")+".php\" alt=\""+item[3]+"\"><img border=\"0\" src=\""+img+"\" alt=\""+item[3]+"\" width=\"16\" height=\"16\" /><span>"+item[3]+"</span></a><br />"
+				self._IMAGES.append("tmp/"+img)
 			except TypeError:
 				retval += "<a class=\"info\" href=\""+item[3].lower().replace(" ","")+".php\">"+item[3]+"</a><br />"
 		return retval
@@ -71,6 +87,8 @@ class layout:
 		#retval.append("templates/default/redirect.php")
 		retval.append("templates/default/style.css")
 		retval.append("templates/default/home.png")
+		for image in self._IMAGES:
+			retval.append(image)
 		return retval
 
 	def filename(self):

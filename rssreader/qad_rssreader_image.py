@@ -33,4 +33,4 @@ if len(args)>1:
 	print "current image is now "+db.read_feedimage(feedid=args[1])
 	db.close()
 else:
-	print "USAGE: ./qad_rssreader_image.py id1 id2 id3 id4.."
+	print "USAGE: ./qad_rssreader_image.py id url"
