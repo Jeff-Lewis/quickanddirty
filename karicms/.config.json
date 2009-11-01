@@ -1,0 +1,5 @@
+{ "PORT" : 4001, 
+"GALLERY_DB": "gallery.db",
+"DEBUG": 1,
+"TEMPLATE_DIR":"examples/",
+"TEMPLATE_MAIN":"main.tmpl" }
