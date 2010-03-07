@@ -7,7 +7,11 @@
 #include <util/delay.h> 
 #include <avr/interrupt.h> 
 
-int direction = 0;
+#define _FORWARD 2
+#define _BACKWARD 1
+#define _STOP 0
+
+volatile int direction = _STOP;
 
 #define _TOP 2480
 
@@ -22,24 +26,36 @@ int direction = 0;
 
 ISR(INT0_vect) 
 {
-   	OCR1A = _BACKWARD_LEFT; 
-   	OCR1B = _BACKWARD_RIGHT;
+	if (direction==_STOP) {
+	   	OCR1A = _BACKWARD_LEFT; 
+   		OCR1B = _BACKWARD_RIGHT;
+		direction = _BACKWARD;
+	} else if (direction==_BACKWARD) {
+	   	OCR1A = _FORWARD_LEFT; 
+   		OCR1B = _FORWARD_RIGHT;
+		direction = _FORWARD;
+	} else {
+   		OCR1A = _STOP_LEFT; 
+   		OCR1B = _STOP_RIGHT;
+		direction = _STOP;
+	}
 }
 
 ISR(INT1_vect) 
 {
-   	OCR1A = _STOP_LEFT; 
-   	OCR1B = _STOP_RIGHT;
+   //	OCR1A = _STOP_LEFT; 
+   	//OCR1B = _STOP_RIGHT;
 }
 
 
 int main (void) 
 { 
-   PCMSK |= (1<<PIND2)|(1<<PIND3);
+   PCMSK |= (1<<PIND2);
    MCUCR = (1<<ISC01) | (1<<ISC00); 
-   GIMSK  |= (1<<INT0)|(1<<INT1);
+   GIMSK  |= (1<<INT0);
 
    DDRB ^= (1<<PB4)|(1<<PB3); 
+ 
 
    ICR1 = _TOP; 
    OCR1A = _STOP_LEFT; 
@@ -47,9 +63,24 @@ int main (void)
    TCCR1A = (1<<COM1A1)|(1<<COM1B1)|(1<<WGM11); 
    TCCR1B = (1<<WGM13)|(1<<WGM12)|(1<<CS11);
 
+
    sei();
+   
+
+   DDRB ^= (1<<PB0)|(1<<PB1)|(1<<PB2);
 
 	while (1) {
-
+		if (direction==_BACKWARD) {
+			PORTB ^= (1<<PB0);		
+		} else if (direction==_FORWARD) {
+			PORTB ^= (1<<PB1);
+		} else if (direction==_STOP) {
+			PORTB ^= (1<<PB2);		
+		} else {
+	    	PORTB &= ~(_BV(PB0)|_BV(PB1)|_BV(PB2));
+		}
+		_delay_ms(20);
+	    PORTB &= ~(_BV(PB0)|_BV(PB1)|_BV(PB2));
+		_delay_ms(20);
 	}
 } 
