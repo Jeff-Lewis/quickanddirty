@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/main" >
+        <file>favicon.ico</file>
+        <file>gplv3-88x31.png</file>
+    </qresource>
+</RCC>
