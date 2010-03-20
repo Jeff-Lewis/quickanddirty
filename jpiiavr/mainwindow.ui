@@ -203,8 +203,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>511</width>
-                 <height>167</height>
+                 <width>509</width>
+                 <height>324</height>
                 </rect>
                </property>
                <layout class="QFormLayout" name="formLayout">
@@ -287,8 +287,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>583</width>
-         <height>386</height>
+         <width>581</width>
+         <height>543</height>
         </rect>
        </property>
        <attribute name="label">
