@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+<head>
+<title>Quick-and-dirty Ruutu Player</title>
+<style>
+body {
+ padding: 0px;
+ margin: 0px;
+}
+</style>
+</head>
+<body>
+<script src="flowplayer-3.1.4.min.js"></script>	
+<div style="float:left;width:10%;background:black;height:100%">
+</script>
+</div>
+<div style="float:right;width:100%">
+<script type="text/javascript">
+function is_int(value){
+  if((parseFloat(value) == parseInt(value)) && !isNaN(parseInt(value))){
+      return true;
+ } else {
+      return false;
+ } 
+}
+  var queryString = window.location.search.replace(/^[^\?]+\??/,'');
+  var vidid = queryString.replace("?vid=","");
+  if (is_int(vidid)) {
+    document.write("<a class=\"rtmp\" href=\"mp4:"+vidid+".mp4\"></a>"); 
+  } else {
+    document.write("<h2>Quick-and-Dirty Ruutu Player</h2><hr>call with ?vid=[0-9]+<br>for example <a href=\"?vid=229652\">here</a><hr>&copy; 2010 Juhapekka Piiroinen - more @ <a href=\"http://code.google.com/p/quickanddirty\">Google Code</a>");
+  }
+</script>
+</div>
+<script type="text/javascript"> 
+$f("a.rtmp", "flowplayer-3.1.5.swf", { 
+	clip: { 
+		provider: 'rtmp'
+	}, 
+	plugins: {  
+	  rtmp: {  
+			url: 'flowplayer.rtmp-3.1.3.swf',			
+			netConnectionUrl: 'rtmp://streamh1.nelonen.fi/hot/'  
+	  } 
+	}     
+});
+</script>  
+<!--
+2010 Juhapekka Piiroinen<br />
+<a href="http://code.google.com/p/quickanddirty">Quick-and-dirty</a> -project.-->
+</body>
