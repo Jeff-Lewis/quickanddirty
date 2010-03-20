@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>gplv3-88x31.png</file>
+        <file>gpl-3.0.txt</file>
+        <file>programmer.txt</file>
+        <file>avrdevices.txt</file>
+    </qresource>
+</RCC>
