@@ -26,6 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
     fillComboboxes();
     loadLicense();
     restoreSettings();
+    loadHelp();
+}
+
+void MainWindow::loadHelp() {
+    ui->textEditHelp->setHtml("<img src=\":/avrtargetboards_1.jpg\" /><br /><img src=\":/avrtargetboards_2.jpg\" /><br />More @ <a href=\"http://www.evilmadscientist.com/article.php/avrtargetboards/\">http://www.evilmadscientist.com/article.php/avrtargetboards/</a>.");
 }
 
 /********************************************************************************

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
-    <height>549</height>
+    <width>599</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,8 +28,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>583</width>
-         <height>386</height>
+         <width>581</width>
+         <height>543</height>
         </rect>
        </property>
        <attribute name="label">
@@ -268,6 +268,16 @@ p, li { white-space: pre-wrap; }
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tab_3">
+           <attribute name="title">
+            <string>Help</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QTextEdit" name="textEditHelp"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -344,7 +354,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>601</width>
+     <width>599</width>
      <height>25</height>
     </rect>
    </property>

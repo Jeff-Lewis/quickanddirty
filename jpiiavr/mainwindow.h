@@ -45,11 +45,12 @@ protected slots:
     void handleReadFlash();
     void restoreSettings();
     void saveSettings();
-    void loadLicense();
 
 protected:
     void connectComponents();
     void fillComboboxes();
+    void loadLicense();
+    void loadHelp();
 
 private:
     Ui::MainWindow *ui;
