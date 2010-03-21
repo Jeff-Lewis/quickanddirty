@@ -12,9 +12,11 @@ TARGET = jpiiAVR
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
-    licensedialog.cpp
+    licensedialog.cpp \
+    codeeditor.cpp
 HEADERS += mainwindow.h \
-    licensedialog.h
+    licensedialog.h \
+    codeeditor.h
 FORMS += mainwindow.ui \
     licensedialog.ui
 OTHER_FILES += avrdevices.txt \

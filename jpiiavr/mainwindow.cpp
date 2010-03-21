@@ -24,11 +24,31 @@ MainWindow::MainWindow(QWidget *parent)
         ui->setupUi(this);
         this->avrDude = new QProcess(parent);
         this->licenseDialog = new LicenseDialog(this);
+        this->codeEditor = new CodeEditor(this);
+        if (!ui->scrollAreaCodeEditor->layout()) {
+            ui->scrollAreaCodeEditor->setLayout(new QVBoxLayout());
+            ui->scrollAreaCodeEditor->layout()->setMargin(0);
+        }
+        ui->scrollAreaCodeEditor->layout()->addWidget(this->codeEditor);
         ui->widgetDatasheetActions->setVisible(false);
         connectComponents();
         fillComboboxes();
         restoreSettings();
         loadHelp();
+    DOUT
+}
+
+void MainWindow::handleOpenSourceCode() {
+    DIN
+        QString filename = QFileDialog::getOpenFileName(this,"Open Source Code","","*.c");
+        if (filename.isNull()==false && QFile(filename).exists()) {
+            ui->comboBoxSourceFilename->addItem(filename);
+            QFile sourceFile(filename);
+            if (sourceFile.open(QIODevice::ReadOnly)) {
+                this->codeEditor->setPlainText(QString(sourceFile.readAll()));
+                sourceFile.close();
+            }
+        }
     DOUT
 }
 
@@ -148,6 +168,7 @@ void MainWindow::connectComponents() {
         connect(ui->pushButtonNextPage,SIGNAL(clicked()),this,SLOT(handleDatasheetNextPage()));
         connect(ui->pushButtonPreviousPage,SIGNAL(clicked()),this,SLOT(handleDatasheetPreviousPage()));
         connect(ui->spinBoxCurrentPage,SIGNAL(valueChanged(int)),this,SLOT(handleDatasheetGotoPage(int)));
+        connect(ui->pushButtonOpenSource,SIGNAL(clicked()),this,SLOT(handleOpenSourceCode()));
 
         connect(this->avrDude,SIGNAL(readyReadStandardOutput()),this,SLOT(handleAvrDudeStdout()));
         connect(this->avrDude,SIGNAL(readyRead()),this,SLOT(handleAvrDudeStdout()));

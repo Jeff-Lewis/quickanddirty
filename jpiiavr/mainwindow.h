@@ -22,6 +22,7 @@
 
 #include <poppler-qt4.h>
 
+#include "codeeditor.h"
 #include "licensedialog.h"
 
 #define AVRDUDE "/usr/bin/avrdude"
@@ -58,6 +59,7 @@ protected slots:
     void handleDatasheetGotoPage(int);
     void handleDatasheetNextPage();
     void handleDatasheetPreviousPage();
+    void handleOpenSourceCode();
 
 protected:
     void connectComponents();
@@ -70,6 +72,7 @@ private:
     QSettings settings;
     Poppler::Document *doc;
     LicenseDialog* licenseDialog;
+    CodeEditor* codeEditor;
 };
 
 #endif // MAINWINDOW_H
