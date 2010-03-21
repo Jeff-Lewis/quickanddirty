@@ -13,10 +13,12 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
     licensedialog.cpp \
-    codeeditor.cpp
+    codeeditor.cpp \
+    highlighter.cpp
 HEADERS += mainwindow.h \
     licensedialog.h \
-    codeeditor.h
+    codeeditor.h \
+    highlighter.h
 FORMS += mainwindow.ui \
     licensedialog.ui
 OTHER_FILES += avrdevices.txt \

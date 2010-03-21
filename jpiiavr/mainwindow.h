@@ -44,6 +44,7 @@ public:
     ~MainWindow();
 
 protected slots:
+    virtual void closeEvent(QCloseEvent *event);
     void handleBrowseFlash();
     void handleWriteFlash();
     void handleTestConnection();
@@ -60,6 +61,7 @@ protected slots:
     void handleDatasheetNextPage();
     void handleDatasheetPreviousPage();
     void handleOpenSourceCode();
+    void handleSourceCodeFilenameChanged();
 
 protected:
     void connectComponents();
