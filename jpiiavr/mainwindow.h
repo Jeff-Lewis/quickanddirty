@@ -79,6 +79,8 @@ protected slots:
     void handleCompilerStarted();
     void handleCompileFlash();
     void handleCompileEeprom();
+    void handleCreateNew();
+    void handleEditCode();
 
 protected:
     void connectComponents();

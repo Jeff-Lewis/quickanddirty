@@ -20,7 +20,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
  int CodeEditor::lineNumberAreaWidth()
  {
-     DIN
+  //   DIN
          int digits = 1;
          int max = qMax(1, blockCount());
          while (max >= 10) {
@@ -29,7 +29,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
          }
 
          int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
-    DOUT
+   // DOUT
          return space;
  }
 
@@ -37,16 +37,16 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
  void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
  {
-     DIN
+     //DIN
         setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
-     DOUT
+     //DOUT
  }
 
 
 
  void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
  {
-     DIN
+     //DIN
          if (dy)
              lineNumberArea->scroll(0, dy);
          else
@@ -54,7 +54,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
          if (rect.contains(viewport()->rect()))
              updateLineNumberAreaWidth(0);
-     DOUT
+ //    DOUT
  }
 
 
@@ -73,7 +73,7 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 
  void CodeEditor::highlightCurrentLine()
  {
-     DIN
+   //  DIN
          QList<QTextEdit::ExtraSelection> extraSelections;
 
          if (!isReadOnly()) {
@@ -89,14 +89,14 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
          }
 
          setExtraSelections(extraSelections);
-     DOUT
+   //  DOUT
  }
 
 
 
  void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
  {
-     DIN
+ //    DIN
          QPainter painter(lineNumberArea);
          painter.fillRect(event->rect(), QColor(Qt::gray).lighter(140));
 
@@ -119,5 +119,5 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
              bottom = top + (int) blockBoundingRect(block).height();
              ++blockNumber;
          }
-     DOUT
+   //  DOUT
  }

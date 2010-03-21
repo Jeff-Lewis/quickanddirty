@@ -102,7 +102,7 @@ DOUT
 
 void Highlighter::highlightBlock(const QString &text)
 {
- DIN
+ //DIN
      foreach (const HighlightingRule &rule, highlightingRules) {
          QRegExp expression(rule.pattern);
          int index = expression.indexIn(text);
@@ -131,5 +131,5 @@ void Highlighter::highlightBlock(const QString &text)
          setFormat(startIndex, commentLength, multiLineCommentFormat);
          startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
      }
- DOUT
+ //DOUT
 }

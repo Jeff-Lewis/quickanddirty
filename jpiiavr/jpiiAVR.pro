@@ -31,7 +31,8 @@ OTHER_FILES += avrdevices.txt \
     ATmega8-summary.pdf \
     2x3pin_ISP.png \
     atmega8.png \
-    attiny-2313.gif
+    attiny-2313.gif \
+    template.txt
 RESOURCES += jpiiavr.qrc
 
 # http://doc.trolltech.com/qq/qq27-poppler.html

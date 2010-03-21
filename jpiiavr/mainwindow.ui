@@ -64,11 +64,52 @@
         <item>
          <widget class="QWidget" name="widget_2" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
-            <widget class="QPushButton" name="pushButtonSaveChanges">
-             <property name="text">
-              <string>Save Changes</string>
-             </property>
+            <widget class="QWidget" name="widget_3" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_11">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="pushButtonSaveChanges">
+                <property name="text">
+                 <string>Save Changes   F4</string>
+                </property>
+                <property name="shortcut">
+                 <string>F4</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonEditCode">
+                <property name="text">
+                 <string>Edit     F10</string>
+                </property>
+                <property name="shortcut">
+                 <string>F10</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonCompileQuick">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Compile  F7</string>
+                </property>
+                <property name="shortcut">
+                 <string>F7</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -85,6 +126,13 @@
             <widget class="QPushButton" name="pushButtonOpenSource">
              <property name="text">
               <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonCreateNew">
+             <property name="text">
+              <string>Create New</string>
              </property>
             </widget>
            </item>
@@ -118,7 +166,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>507</width>
-                 <height>435</height>
+                 <height>385</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -372,8 +420,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>505</width>
-                 <height>343</height>
+                 <width>820</width>
+                 <height>348</height>
                 </rect>
                </property>
                <layout class="QFormLayout" name="formLayout">

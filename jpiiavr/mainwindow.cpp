@@ -40,6 +40,28 @@ MainWindow::MainWindow(QWidget *parent)
     DOUT
 }
 
+void MainWindow::handleEditCode() {
+    DIN;
+        ui->tabWidgetCoding->setCurrentIndex(0);
+    DOUT;
+}
+
+void MainWindow::handleCreateNew()
+{
+    DIN
+        ui->lineEditSourceCodeFilename->setText("");
+        ui->lineEditFlash->setText("");
+        QFile fileTemplate(QString("%0/template.txt").arg(QCoreApplication::applicationDirPath()));
+        if (fileTemplate.open(QIODevice::ReadOnly)) {
+            QString templateData = QString(fileTemplate.readAll());
+            this->codeEditor->setPlainText(templateData);
+        } else {
+            this->codeEditor->setPlainText("");
+        }
+        ui->pushButtonSaveChanges->setEnabled(true);
+    DOUT
+}
+
 void MainWindow::handleCompileEeprom()
 {
     DIN
@@ -132,6 +154,7 @@ void MainWindow::handleCompilerFinished(int value)
             }
         }
         ui->pushButtonCompile->setEnabled(true);
+        ui->pushButtonCompileQuick->setEnabled(true);
         ui->pushButtonGenerateFlash->setEnabled(true);
     DOUT
 }
@@ -140,6 +163,7 @@ void MainWindow::handleCompilerStarted()
 {
     DIN
         ui->pushButtonCompile->setEnabled(false);
+        ui->pushButtonCompileQuick->setEnabled(false);
         ui->pushButtonGenerateFlash->setEnabled(false);
     DOUT
 }
@@ -189,10 +213,21 @@ void MainWindow::handleSaveSourceCode()
     DIN
         QString filename = ui->lineEditSourceCodeFilename->text();
         QFile fileSourceCode(filename);
+        if (filename.trimmed().length()==0) {
+            filename = QFileDialog::getSaveFileName(this,"Save Source Code as..","","*.c");
+            if (filename.length()==0) {
+                return;
+            }
+            if (filename.endsWith(".c")==false) {
+                filename.append(".c");
+            }
+            ui->lineEditSourceCodeFilename->setText(filename);
+            fileSourceCode.setFileName(filename);
+        }
         if (fileSourceCode.open(QIODevice::WriteOnly)) {
             fileSourceCode.write(this->codeEditor->toPlainText().toAscii());
             fileSourceCode.close();
-        }
+        } else 
         ui->pushButtonSaveChanges->setEnabled(false);
     DOUT
 }
@@ -348,6 +383,9 @@ void MainWindow::connectComponents()
         connect(ui->pushButtonCompile,SIGNAL(clicked()),this,SLOT(handleCompile()));
         connect(ui->pushButtonGenerateFlash,SIGNAL(clicked()),this,SLOT(handleCompileFlash()));
         connect(ui->pushButtonGenerateEeprom,SIGNAL(clicked()),this,SLOT(handleCompileEeprom()));
+        connect(ui->pushButtonCreateNew,SIGNAL(clicked()),this,SLOT(handleCreateNew()));
+        connect(ui->pushButtonCompileQuick,SIGNAL(clicked()),this,SLOT(handleCompile()));
+        connect(ui->pushButtonEditCode,SIGNAL(clicked()),this,SLOT(handleEditCode()));
 
         connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleSourceCodeEdited()));
         connect(ui->doubleSpinBoxScaleFactor,SIGNAL(valueChanged(double)),this,SLOT(handleScaleFactorChanged(double)));
