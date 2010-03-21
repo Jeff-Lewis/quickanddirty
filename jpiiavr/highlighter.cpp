@@ -20,6 +20,13 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
     DIN
         HighlightingRule rule;
 
+            functionFormat.setFontItalic(true);
+        functionFormat.setForeground(Qt::darkBlue);
+        rule.pattern = QRegExp("\\b[A-Za-z0-9_]+[ ]?(?=\\()");
+        rule.format = functionFormat;
+        highlightingRules.append(rule);
+
+
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
         QStringList keywordPatterns;
@@ -84,11 +91,6 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
         rule.format = quotationFormat;
         highlightingRules.append(rule);
 
-        functionFormat.setFontItalic(true);
-        functionFormat.setForeground(Qt::blue);
-        rule.pattern = QRegExp("\\b[A-Za-z0-9_ ]+(?=\\()");
-        rule.format = functionFormat;
-        highlightingRules.append(rule);
 
         operatorFormat.setFontItalic(true);
         operatorFormat.setForeground(QColor(Qt::gray));
@@ -103,6 +105,11 @@ Highlighter::Highlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 
         operatorFormat.setForeground(Qt::red);
         rule.pattern = QRegExp("[~!]+");
+        rule.format = operatorFormat;
+        highlightingRules.append(rule);
+
+        operatorFormat.setForeground(QColor(Qt::black));
+        rule.pattern = QRegExp("\\b0[x,b]+");
         rule.format = operatorFormat;
         highlightingRules.append(rule);
 

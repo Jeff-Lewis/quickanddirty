@@ -63,26 +63,56 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QWidget" name="widget_2" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout_9">
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+          <layout class="QVBoxLayout" name="verticalLayout_11">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
+            <widget class="QWidget" name="widget_5" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Filename:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditSourceCodeFilename"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonOpenSource">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonCreateNew">
+                <property name="text">
+                 <string>Create New</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QWidget" name="widget_3" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_11">
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
               <property name="margin">
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="pushButtonSaveChanges">
+               <widget class="QPushButton" name="pushButtonCompileQuick">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="text">
-                 <string>Save Changes   F4</string>
+                 <string>Compile  F7</string>
                 </property>
                 <property name="shortcut">
-                 <string>F4</string>
+                 <string>F7</string>
                 </property>
                </widget>
               </item>
@@ -97,43 +127,16 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButtonCompileQuick">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
+               <widget class="QPushButton" name="pushButtonSaveChanges">
                 <property name="text">
-                 <string>Compile  F7</string>
+                 <string>Save Changes   F4</string>
                 </property>
                 <property name="shortcut">
-                 <string>F7</string>
+                 <string>F4</string>
                 </property>
                </widget>
               </item>
              </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Filename:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEditSourceCodeFilename"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButtonOpenSource">
-             <property name="text">
-              <string>...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButtonCreateNew">
-             <property name="text">
-              <string>Create New</string>
-             </property>
             </widget>
            </item>
           </layout>
@@ -166,7 +169,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>507</width>
-                 <height>385</height>
+                 <height>401</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">

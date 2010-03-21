@@ -3,8 +3,10 @@
 
 void main()
 {
+   uint8_t exampleVar = 0x0000;
    for(;;)
    {
-        _delay_ms(10);
+       _delay_ms(10);
+       exampleVar += 1;
    }
 }
