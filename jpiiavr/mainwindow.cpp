@@ -31,11 +31,16 @@ MainWindow::MainWindow(QWidget *parent)
         }
         ui->scrollAreaCodeEditor->layout()->addWidget(this->codeEditor);
         ui->widgetDatasheetActions->setVisible(false);
+        ui->pushButtonSaveChanges->setEnabled(false);
         connectComponents();
         fillComboboxes();
         restoreSettings();
         loadHelp();
     DOUT
+}
+
+void MainWindow::handleSourceCodeEdited() {
+    ui->pushButtonSaveChanges->setEnabled(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)  {
@@ -53,6 +58,18 @@ void MainWindow::handleSourceCodeFilenameChanged() {
                 sourceFile.close();
             }
         }
+    DOUT
+}
+
+void MainWindow::handleSaveSourceCode() {
+    DIN
+        QString filename = ui->lineEditSourceCodeFilename->text();
+        QFile fileSourceCode(filename);
+        if (fileSourceCode.open(QIODevice::WriteOnly)) {
+            fileSourceCode.write(this->codeEditor->toPlainText().toAscii());
+            fileSourceCode.close();
+        }
+        ui->pushButtonSaveChanges->setEnabled(false);
     DOUT
 }
 
@@ -149,8 +166,9 @@ void MainWindow::restoreSettings() {
         ui->lineEditPort->setText(this->settings.value(ui->lineEditPort->objectName(),"usb").toString());
         ui->comboBoxAVR->setCurrentIndex(this->settings.value(ui->comboBoxAVR->objectName(),0).toInt());
         ui->lineEditFlash->setText(this->settings.value(ui->lineEditFlash->objectName()).toString());
-        this->codeEditor->setPlainText(this->settings.value(this->codeEditor->objectName()).toString());
+        // this->codeEditor->setPlainText(this->settings.value(this->codeEditor->objectName()).toString());
         ui->lineEditSourceCodeFilename->setText(this->settings.value(ui->lineEditSourceCodeFilename->objectName()).toString());
+        handleSourceCodeFilenameChanged();
     DOUT
 }
 
@@ -166,7 +184,7 @@ void MainWindow::saveSettings() {
         this->settings.setValue(ui->comboBoxAVR->objectName(),ui->comboBoxAVR->currentIndex());
         this->settings.setValue(ui->lineEditFlash->objectName(),ui->lineEditFlash->text());
         this->settings.setValue(ui->lineEditSourceCodeFilename->objectName(),ui->lineEditSourceCodeFilename->text());
-        this->settings.setValue(this->codeEditor->objectName(),this->codeEditor->toPlainText());
+        //this->settings.setValue(this->codeEditor->objectName(),this->codeEditor->toPlainText());
     DOUT
 }
 
@@ -188,6 +206,9 @@ void MainWindow::connectComponents() {
         connect(ui->spinBoxCurrentPage,SIGNAL(valueChanged(int)),this,SLOT(handleDatasheetGotoPage(int)));
         connect(ui->pushButtonOpenSource,SIGNAL(clicked()),this,SLOT(handleOpenSourceCode()));
         connect(ui->lineEditSourceCodeFilename,SIGNAL(returnPressed()),this,SLOT(handleSourceCodeFilenameChanged()));
+        connect(ui->pushButtonSaveChanges,SIGNAL(clicked()),this,SLOT(handleSaveSourceCode()));
+
+        connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleSourceCodeEdited()));
 
         connect(this->avrDude,SIGNAL(readyReadStandardOutput()),this,SLOT(handleAvrDudeStdout()));
         connect(this->avrDude,SIGNAL(readyRead()),this,SLOT(handleAvrDudeStdout()));

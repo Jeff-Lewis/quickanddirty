@@ -61,7 +61,9 @@ protected slots:
     void handleDatasheetNextPage();
     void handleDatasheetPreviousPage();
     void handleOpenSourceCode();
+    void handleSaveSourceCode();
     void handleSourceCodeFilenameChanged();
+    void handleSourceCodeEdited();
 
 protected:
     void connectComponents();
