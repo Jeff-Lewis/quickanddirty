@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     DIN
         ui->setupUi(this);
         this->avrDude = new QProcess(parent);
+        this->compiler = new QProcess(parent);
         this->licenseDialog = new LicenseDialog(this);
         this->codeEditor = new CodeEditor(this);
         if (!ui->scrollAreaCodeEditor->layout()) {
@@ -38,6 +39,111 @@ MainWindow::MainWindow(QWidget *parent)
         loadHelp();
     DOUT
 }
+
+void MainWindow::handleCompileEeprom()
+{
+    DIN
+        //avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex interrupts.elf interrupts.eep
+        QString fileName = ui->lineEditSourceCodeFilename->text();
+        QStringList arguments;
+        arguments << "-j" << ".eeprom";
+        arguments << "--change-section-lma" << ".eeprom=0";
+        arguments << "-O" << "ihex";
+        arguments << QString("%0.elf").arg(fileName);
+        arguments << QString("%0.eep").arg(fileName);
+        QString command(ui->lineEditAvrObjCopy->text());
+        ui->textEditTerminalCompiler->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
+        this->compilerMode = AVREEPROM;
+        this->compiler->start(command,arguments);
+    DOUT
+}
+
+void MainWindow::handleCompileFlash()
+{
+    DIN
+        //avr-objcopy -R .eeprom -O ihex interrupts.elf interrupts.hex
+        QString fileName = ui->lineEditSourceCodeFilename->text();
+        QStringList arguments;
+        arguments << "-R" << ".eeprom";
+        arguments << "-O" << "ihex";
+        arguments << QString("%0.elf").arg(fileName);
+        arguments << QString("%0.hex").arg(fileName);
+        QString command(ui->lineEditAvrObjCopy->text());
+        ui->textEditTerminalCompiler->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
+        this->compilerMode = AVROBJCOPY;
+        this->compiler->start(command,arguments);
+    DOUT
+}
+
+void MainWindow::handleCompile()
+{
+    DIN
+        ui->tabWidgetCoding->setCurrentIndex(1);
+        if (ui->pushButtonSaveChanges->isEnabled()) {
+            this->handleSaveSourceCode();
+        }
+        //avr-gcc -mmcu=atmega8 -o interrupts.elf interrupts.c
+        /*QFile fileCompiler("jpiiavr.c");
+        if (fileCompiler.open(QIODevice::WriteOnly)==false) {
+            ui->textEditTerminalCompiler->append("Failed to open temporary file for compiler!");
+            return;
+        }
+        fileCompiler.write(this->codeEditor->toPlainText().toAscii());
+        fileCompiler.close();*/
+        QString fileName = ui->lineEditSourceCodeFilename->text();
+        QStringList arguments;
+        arguments << QString("-mmcu=%0").arg(ui->comboBoxAVR->itemText(ui->comboBoxAVR->currentIndex()).toLower());
+        arguments << "-o" << QString("%0.elf").arg(fileName);
+        arguments << fileName;
+        QString command(ui->lineEditAvrGcc->text());
+        ui->textEditTerminalCompiler->clear();
+        ui->textEditTerminalCompiler->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
+        this->compilerMode = AVRGCC;
+        this->compiler->start(command,arguments);
+    DOUT
+}
+
+void MainWindow::handleCompilerStdout()
+{
+    DIN
+        QString stdout(this->compiler->readAllStandardOutput());
+        QString stderr(this->compiler->readAllStandardError());
+        QString out(this->compiler->readAll());
+        ui->textEditTerminalCompiler->append(stdout);
+        ui->textEditTerminalCompiler->append(stderr);
+        ui->textEditTerminalCompiler->append(out);
+    DOUT
+}
+
+void MainWindow::handleCompilerFinished(int value)
+{
+    DIN
+        if (value==1) { //failed
+            ui->textEditTerminalCompiler->append("==> Failed! :(");
+        } else {
+            ui->textEditTerminalCompiler->append("==> Ok! :)");
+            if (this->compilerMode==AVRGCC) {
+                this->handleCompileFlash();
+            } else if (this->compilerMode==AVROBJCOPY) {
+                ui->lineEditFlash->setText(QString("%0.hex").arg(ui->lineEditSourceCodeFilename->text()));
+                this->handleCompileEeprom();
+            } else {
+
+            }
+        }
+        ui->pushButtonCompile->setEnabled(true);
+        ui->pushButtonGenerateFlash->setEnabled(true);
+    DOUT
+}
+
+void MainWindow::handleCompilerStarted()
+{
+    DIN
+        ui->pushButtonCompile->setEnabled(false);
+        ui->pushButtonGenerateFlash->setEnabled(false);
+    DOUT
+}
+
 
 void MainWindow::handleScaleFactorChanged(double value)
 {
@@ -188,10 +294,12 @@ void MainWindow::restoreSettings()
 {
     DIN
         ui->lineEditAVRDude->setText(this->settings.value(ui->lineEditAVRDude->objectName(),QString(AVRDUDE)).toString());
+        ui->lineEditAvrGcc->setText(this->settings.value(ui->lineEditAvrGcc->objectName(),QString(AVRGCC)).toString());
         ui->comboBoxProgrammer->setCurrentIndex(this->settings.value(ui->comboBoxProgrammer->objectName(),0).toInt());
         ui->lineEditPort->setText(this->settings.value(ui->lineEditPort->objectName(),"usb").toString());
         ui->comboBoxAVR->setCurrentIndex(this->settings.value(ui->comboBoxAVR->objectName(),0).toInt());
         ui->lineEditFlash->setText(this->settings.value(ui->lineEditFlash->objectName()).toString());
+        ui->lineEditAvrObjCopy->setText(this->settings.value(ui->lineEditAvrObjCopy->objectName(),QString(AVROBJCOPY)).toString());
         // this->codeEditor->setPlainText(this->settings.value(this->codeEditor->objectName()).toString());
         ui->lineEditSourceCodeFilename->setText(this->settings.value(ui->lineEditSourceCodeFilename->objectName()).toString());
         handleSourceCodeFilenameChanged();
@@ -206,6 +314,8 @@ void MainWindow::saveSettings()
 {
     DIN
         this->settings.setValue(ui->lineEditAVRDude->objectName(),ui->lineEditAVRDude->text());
+        this->settings.setValue(ui->lineEditAvrGcc->objectName(),ui->lineEditAvrGcc->text());
+        this->settings.setValue(ui->lineEditAvrObjCopy->objectName(),ui->lineEditAvrObjCopy->text());
         this->settings.setValue(ui->comboBoxProgrammer->objectName(),ui->comboBoxProgrammer->currentIndex());
         this->settings.setValue(ui->lineEditPort->objectName(),ui->lineEditPort->text());
         this->settings.setValue(ui->comboBoxAVR->objectName(),ui->comboBoxAVR->currentIndex());
@@ -235,6 +345,9 @@ void MainWindow::connectComponents()
         connect(ui->pushButtonOpenSource,SIGNAL(clicked()),this,SLOT(handleOpenSourceCode()));
         connect(ui->lineEditSourceCodeFilename,SIGNAL(returnPressed()),this,SLOT(handleSourceCodeFilenameChanged()));
         connect(ui->pushButtonSaveChanges,SIGNAL(clicked()),this,SLOT(handleSaveSourceCode()));
+        connect(ui->pushButtonCompile,SIGNAL(clicked()),this,SLOT(handleCompile()));
+        connect(ui->pushButtonGenerateFlash,SIGNAL(clicked()),this,SLOT(handleCompileFlash()));
+        connect(ui->pushButtonGenerateEeprom,SIGNAL(clicked()),this,SLOT(handleCompileEeprom()));
 
         connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleSourceCodeEdited()));
         connect(ui->doubleSpinBoxScaleFactor,SIGNAL(valueChanged(double)),this,SLOT(handleScaleFactorChanged(double)));
@@ -244,6 +357,12 @@ void MainWindow::connectComponents()
         connect(this->avrDude,SIGNAL(readyReadStandardError()),this,SLOT(handleAvrDudeStdout()));
         connect(this->avrDude,SIGNAL(started()),this,SLOT(handleAvrDudeStarted()));
         connect(this->avrDude,SIGNAL(finished(int)),this,SLOT(handleAvrDudeFinished(int)));
+
+        connect(this->compiler,SIGNAL(readyRead()),this,SLOT(handleCompilerStdout()));
+        connect(this->compiler,SIGNAL(readyReadStandardError()),this,SLOT(handleCompilerStdout()));
+        connect(this->compiler,SIGNAL(readyReadStandardOutput()),this,SLOT(handleCompilerStdout()));
+        connect(this->compiler,SIGNAL(started()),this,SLOT(handleCompilerStarted()));
+        connect(this->compiler,SIGNAL(finished(int)),this,SLOT(handleCompilerFinished(int)));
     DOUT
 }
 
@@ -274,7 +393,7 @@ void MainWindow::handleAvrDudeFinished(int val)
 void MainWindow::handleAvrDudeStdout()
 {
     DIN
-            QString stdout(this->avrDude->readAllStandardOutput());
+        QString stdout(this->avrDude->readAllStandardOutput());
         QString stderr(this->avrDude->readAllStandardError());
         QString out(this->avrDude->readAll());
         ui->textEditTerminal->append(stdout);
@@ -299,7 +418,7 @@ void MainWindow::fillComboboxes()
                 if (lineData.count()==2) {
                     QString desc = lineData.takeLast().trimmed();
                     QString id = lineData.takeFirst().trimmed();
-                    ui->comboBoxAVR->addItem(QString("%0 (%1)").arg(desc).arg(id),id);
+                    ui->comboBoxAVR->addItem(QString("%0").arg(desc),id);
                 }
             }
         } else {

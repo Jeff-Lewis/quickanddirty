@@ -11,6 +11,13 @@
   juhapekka.piiroinen@gmail.com
 *******************************************************************************/
 
+/////////////////////////////////////////////////////////////////////////////////
+//avr-gcc -mmcu=atmega8 -o interrupts.elf interrupts.c
+//avr-objcopy -R .eeprom -O ihex interrupts.elf interrupts.hex
+//avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex interrupts.elf interrupts.eep
+//avr-objdump -S interrupts.elf > interrupts.lss
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -27,6 +34,9 @@
 #include "common.h"
 
 #define AVRDUDE "/usr/bin/avrdude"
+#define AVRGCC "/usr/bin/avr-gcc"
+#define AVROBJCOPY "/usr/bin/avr-objcopy"
+#define AVREEPROM "avreeprom"
 
 namespace Ui
 {
@@ -63,6 +73,12 @@ protected slots:
     void handleSourceCodeFilenameChanged();
     void handleSourceCodeEdited();
     void handleScaleFactorChanged(double);
+    void handleCompile();
+    void handleCompilerStdout();
+    void handleCompilerFinished(int);
+    void handleCompilerStarted();
+    void handleCompileFlash();
+    void handleCompileEeprom();
 
 protected:
     void connectComponents();
@@ -72,10 +88,12 @@ protected:
 private:
     Ui::MainWindow *ui;
     QProcess* avrDude;
+    QProcess* compiler;
     QSettings settings;
     Poppler::Document *doc;
     LicenseDialog* licenseDialog;
     CodeEditor* codeEditor;
+    QString compilerMode;
 };
 
 #endif // MAINWINDOW_H

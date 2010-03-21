@@ -65,6 +65,13 @@
          <widget class="QWidget" name="widget_2" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
+            <widget class="QPushButton" name="pushButtonSaveChanges">
+             <property name="text">
+              <string>Save Changes</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
               <string>Filename:</string>
@@ -85,35 +92,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QWidget" name="widget_3" native="true">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_11">
-           <item>
-            <widget class="QPushButton" name="pushButtonSaveChanges">
-             <property name="text">
-              <string>Save Source Code</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButtonCompile">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Compile</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTabWidget" name="tabWidget_3">
+         <widget class="QTabWidget" name="tabWidgetCoding">
           <property name="tabPosition">
-           <enum>QTabWidget::South</enum>
+           <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
            <number>0</number>
@@ -136,8 +117,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>537</width>
-                 <height>354</height>
+                 <width>507</width>
+                 <height>435</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -152,11 +133,53 @@
           </widget>
           <widget class="QWidget" name="tab_8">
            <attribute name="title">
-            <string>Compiler Output</string>
+            <string>Compiler</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_10">
             <item>
-             <widget class="QTextEdit" name="textEditTerminal_2">
+             <widget class="QWidget" name="widget_4" native="true">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_12">
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="pushButtonCompile">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>1) Compile</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonGenerateFlash">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>2) Generate Flash</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonGenerateEeprom">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>3) Generate EEPROM</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="textEditTerminalCompiler">
               <property name="styleSheet">
                <string>background:black; color:rgb(0,255,0)</string>
               </property>
@@ -171,13 +194,48 @@ p, li { white-space: pre-wrap; }
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tab_9">
+           <attribute name="title">
+            <string>Settings</string>
+           </attribute>
+           <layout class="QFormLayout" name="formLayout_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>avr-gcc:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="lineEditAvrGcc">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>avr-objcopy</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="lineEditAvrObjCopy">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_6">
        <attribute name="title">
-        <string>Flash</string>
+        <string>Flash (Burn) Device</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
@@ -229,6 +287,9 @@ p, li { white-space: pre-wrap; }
            <bool>true</bool>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="margin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QPushButton" name="pushButtonWrite">
              <property name="text">
@@ -312,7 +373,7 @@ p, li { white-space: pre-wrap; }
                  <x>0</x>
                  <y>0</y>
                  <width>505</width>
-                 <height>139</height>
+                 <height>343</height>
                 </rect>
                </property>
                <layout class="QFormLayout" name="formLayout">
