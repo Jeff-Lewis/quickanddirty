@@ -11,17 +11,25 @@
 TARGET = jpiiAVR
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp
-HEADERS += mainwindow.h
-FORMS += mainwindow.ui
+    mainwindow.cpp \
+    licensedialog.cpp
+HEADERS += mainwindow.h \
+    licensedialog.h
+FORMS += mainwindow.ui \
+    licensedialog.ui
 OTHER_FILES += avrdevices.txt \
     programmer.txt \
     gplv3-88x31.png \
     gpl-3.0.txt \
     avrtargetboards_2.jpg \
-    avrtargetboards_1.jpg
+    avrtargetboards_1.jpg \
+    ATmega8-summary.pdf \
+    2x3pin_ISP.png \
+    atmega8.png \
+    attiny-2313.gif
 RESOURCES += jpiiavr.qrc
 
-#http://doc.trolltech.com/qq/qq27-poppler.html
-INCLUDEPATH  += /usr/include/poppler/qt4
-LIBS         += -L/usr/lib -lpoppler-qt4
+# http://doc.trolltech.com/qq/qq27-poppler.html
+INCLUDEPATH += /usr/include/poppler/qt4
+LIBS += -L/usr/lib \
+    -lpoppler-qt4

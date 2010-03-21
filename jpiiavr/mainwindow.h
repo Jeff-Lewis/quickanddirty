@@ -14,6 +14,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDebug>
 #include <QtGui/QMainWindow>
 #include <QFileDialog>
 #include <QProcess>
@@ -21,7 +22,12 @@
 
 #include <poppler-qt4.h>
 
+#include "licensedialog.h"
+
 #define AVRDUDE "/usr/bin/avrdude"
+
+#define DIN qDebug() << ">>" << __FUNCTION__;
+#define DOUT qDebug() << "<<" << __FUNCTION__;
 
 namespace Ui
 {
@@ -48,11 +54,14 @@ protected slots:
     void restoreSettings();
     void saveSettings();
     void handleOpenDatasheet();
+    void handleShowLicense();
+    void handleDatasheetGotoPage(int);
+    void handleDatasheetNextPage();
+    void handleDatasheetPreviousPage();
 
 protected:
     void connectComponents();
     void fillComboboxes();
-    void loadLicense();
     void loadHelp();
 
 private:
@@ -60,6 +69,7 @@ private:
     QProcess* avrDude;
     QSettings settings;
     Poppler::Document *doc;
+    LicenseDialog* licenseDialog;
 };
 
 #endif // MAINWINDOW_H
