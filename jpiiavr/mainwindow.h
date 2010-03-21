@@ -19,6 +19,8 @@
 #include <QProcess>
 #include <QSettings>
 
+#include <poppler-qt4.h>
+
 #define AVRDUDE "/usr/bin/avrdude"
 
 namespace Ui
@@ -45,6 +47,7 @@ protected slots:
     void handleReadFlash();
     void restoreSettings();
     void saveSettings();
+    void handleOpenDatasheet();
 
 protected:
     void connectComponents();
@@ -56,6 +59,7 @@ private:
     Ui::MainWindow *ui;
     QProcess* avrDude;
     QSettings settings;
+    Poppler::Document *doc;
 };
 
 #endif // MAINWINDOW_H

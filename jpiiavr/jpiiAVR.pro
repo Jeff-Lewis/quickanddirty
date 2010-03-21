@@ -21,3 +21,7 @@ OTHER_FILES += avrdevices.txt \
     avrtargetboards_2.jpg \
     avrtargetboards_1.jpg
 RESOURCES += jpiiavr.qrc
+
+#http://doc.trolltech.com/qq/qq27-poppler.html
+INCLUDEPATH  += /usr/include/poppler/qt4
+LIBS         += -L/usr/lib -lpoppler-qt4

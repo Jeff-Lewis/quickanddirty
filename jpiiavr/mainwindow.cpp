@@ -29,6 +29,16 @@ MainWindow::MainWindow(QWidget *parent)
     loadHelp();
 }
 
+void MainWindow::handleOpenDatasheet() {
+    this->doc = Poppler::Document::load(ui->comboBoxDatasheets->currentText());
+    int scaleFactor = 1;
+    QImage image = doc->page(0)->renderToImage(scaleFactor * physicalDpiX(),scaleFactor * physicalDpiY());
+    if (!ui->graphicsViewDatasheet->scene()) {
+        ui->graphicsViewDatasheet->setScene(new QGraphicsScene());
+    }
+    ui->graphicsViewDatasheet->scene()->addPixmap(QPixmap::fromImage(image));
+}
+
 void MainWindow::loadHelp() {
     ui->textEditHelp->setHtml("<img src=\":/avrtargetboards_1.jpg\" /><br /><img src=\":/avrtargetboards_2.jpg\" /><br />More @ <a href=\"http://www.evilmadscientist.com/article.php/avrtargetboards/\">http://www.evilmadscientist.com/article.php/avrtargetboards/</a>.");
 }
@@ -78,6 +88,7 @@ void MainWindow::connectComponents() {
     connect(ui->pushButtonTest,SIGNAL(clicked()),this,SLOT(handleTestConnection()));
     connect(ui->pushButtonSaveSettings,SIGNAL(clicked()),this,SLOT(saveSettings()));
     connect(ui->pushButtonRestoreSettings,SIGNAL(clicked()),this,SLOT(restoreSettings()));
+    connect(ui->pushButtonOpenDatasheet,SIGNAL(clicked()),this,SLOT(handleOpenDatasheet()));
     connect(this->avrDude,SIGNAL(readyReadStandardOutput()),this,SLOT(handleAvrDudeStdout()));
     connect(this->avrDude,SIGNAL(readyRead()),this,SLOT(handleAvrDudeStdout()));
     connect(this->avrDude,SIGNAL(readyReadStandardError()),this,SLOT(handleAvrDudeStdout()));
