@@ -63,6 +63,7 @@ void MainWindow::handleDatasheetGotoPage(int page) {
             ui->graphicsViewDatasheet->setScene(new QGraphicsScene());
         }
         ui->graphicsViewDatasheet->scene()->addPixmap(QPixmap::fromImage(image));
+        ui->graphicsViewDatasheet->resize(image.size());
         ui->widgetDatasheetActions->setVisible(true);
     DOUT
 }
