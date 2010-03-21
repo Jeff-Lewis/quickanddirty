@@ -3,6 +3,7 @@
 //http://pepper.troll.no/s60prereleases/doc/widgets-codeeditor.html
 #include <QPlainTextEdit>
 #include <QObject>
+#include "common.h"
 
 #include "highlighter.h"
 

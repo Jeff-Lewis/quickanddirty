@@ -4,6 +4,7 @@
 //http://qt.nokia.com/doc/4.6/richtext-syntaxhighlighter-highlighter-cpp.html
 
  #include <QSyntaxHighlighter>
+#include "common.h"
 
  #include <QHash>
  #include <QTextCharFormat>

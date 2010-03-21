@@ -39,29 +39,47 @@ MainWindow::MainWindow(QWidget *parent)
     DOUT
 }
 
-void MainWindow::handleSourceCodeEdited() {
-    ui->pushButtonSaveChanges->setEnabled(true);
+void MainWindow::handleScaleFactorChanged(double value)
+{
+    Q_UNUSED(value);
+    DIN
+        this->handleDatasheetGotoPage(ui->spinBoxCurrentPage->value());
+    DOUT
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)  {
-    QMainWindow::closeEvent(event);
-    saveSettings();
+void MainWindow::handleSourceCodeEdited()
+{
+    DIN
+        ui->pushButtonSaveChanges->setEnabled(true);
+    DOUT
 }
 
-void MainWindow::handleSourceCodeFilenameChanged() {
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    DIN
+        QMainWindow::closeEvent(event);
+        saveSettings();
+    DOUT
+}
+
+void MainWindow::handleSourceCodeFilenameChanged()
+{
     DIN
         QString filename = ui->lineEditSourceCodeFilename->text();
         if (QFile::exists(filename)) {
             QFile sourceFile(filename);
             if (sourceFile.open(QIODevice::ReadOnly)) {
-                this->codeEditor->setPlainText(QString(sourceFile.readAll()));
+                if (sourceFile.bytesAvailable()>0) {
+                    this->codeEditor->setPlainText(QString(sourceFile.readAll()));
+                }
                 sourceFile.close();
             }
         }
     DOUT
 }
 
-void MainWindow::handleSaveSourceCode() {
+void MainWindow::handleSaveSourceCode()
+{
     DIN
         QString filename = ui->lineEditSourceCodeFilename->text();
         QFile fileSourceCode(filename);
@@ -73,7 +91,8 @@ void MainWindow::handleSaveSourceCode() {
     DOUT
 }
 
-void MainWindow::handleOpenSourceCode() {
+void MainWindow::handleOpenSourceCode()
+{
     DIN
         QString filename = QFileDialog::getOpenFileName(this,"Open Source Code","","*.c");
         if (filename.isNull()==false && QFile(filename).exists()) {
@@ -83,9 +102,10 @@ void MainWindow::handleOpenSourceCode() {
     DOUT
 }
 
-void MainWindow::handleDatasheetGotoPage(int page) {
+void MainWindow::handleDatasheetGotoPage(int page)
+{
     DIN
-        int scaleFactor = 1;
+        double scaleFactor = ui->doubleSpinBoxScaleFactor->value();
         if (page>doc->numPages()) {
             qWarning() << "too large page number";
             return;
@@ -106,7 +126,7 @@ void MainWindow::handleDatasheetGotoPage(int page) {
         page -= 1;
 
         qDebug() << "rendering..";
-        QImage image = doc->page(page)->renderToImage(scaleFactor * physicalDpiX(),scaleFactor * physicalDpiY());
+        QImage image = doc->page(page)->renderToImage(scaleFactor * this->physicalDpiX(),scaleFactor * this->physicalDpiY());
         qDebug() << "rendering done!";
         if (ui->graphicsViewDatasheet->scene()) {
             ui->graphicsViewDatasheet->scene()->clear();
@@ -119,7 +139,8 @@ void MainWindow::handleDatasheetGotoPage(int page) {
     DOUT
 }
 
-void MainWindow::handleDatasheetNextPage() {
+void MainWindow::handleDatasheetNextPage()
+{
     DIN
         if (ui->spinBoxCurrentPage->value()<doc->numPages()) {
             ui->spinBoxCurrentPage->setValue(ui->spinBoxCurrentPage->value()+1);
@@ -127,7 +148,8 @@ void MainWindow::handleDatasheetNextPage() {
     DOUT
 }
 
-void MainWindow::handleDatasheetPreviousPage() {
+void MainWindow::handleDatasheetPreviousPage()
+{
     DIN
         if (ui->spinBoxCurrentPage->value()>0) {
             ui->spinBoxCurrentPage->setValue(ui->spinBoxCurrentPage->value()-1);
@@ -135,13 +157,15 @@ void MainWindow::handleDatasheetPreviousPage() {
     DOUT
 }
 
-void MainWindow::handleShowLicense() {
+void MainWindow::handleShowLicense()
+{
     DIN
             this->licenseDialog->exec();
     DOUT
 }
 
-void MainWindow::handleOpenDatasheet() {
+void MainWindow::handleOpenDatasheet()
+{
     DIN
         this->doc = Poppler::Document::load(ui->comboBoxDatasheets->itemData(ui->comboBoxDatasheets->currentIndex()).toString());
         ui->spinBoxCurrentPage->setMaximum(this->doc->numPages());
@@ -150,7 +174,8 @@ void MainWindow::handleOpenDatasheet() {
     DOUT
 }
 
-void MainWindow::loadHelp() {
+void MainWindow::loadHelp()
+{
     DIN
         ui->textEditHelp->setHtml("<img src=\":/avrtargetboards_1.jpg\" /><br /><img src=\":/avrtargetboards_2.jpg\" /><br />More @ <a href=\"http://www.evilmadscientist.com/article.php/avrtargetboards/\">http://www.evilmadscientist.com/article.php/avrtargetboards/</a>.");
     DOUT
@@ -159,7 +184,8 @@ void MainWindow::loadHelp() {
 /********************************************************************************
   restore settings, slot for restore settings button as well
 ********************************************************************************/
-void MainWindow::restoreSettings() {
+void MainWindow::restoreSettings()
+{
     DIN
         ui->lineEditAVRDude->setText(this->settings.value(ui->lineEditAVRDude->objectName(),QString(AVRDUDE)).toString());
         ui->comboBoxProgrammer->setCurrentIndex(this->settings.value(ui->comboBoxProgrammer->objectName(),0).toInt());
@@ -176,7 +202,8 @@ void MainWindow::restoreSettings() {
 /********************************************************************************
   save settings, slot for save settings button as well
 ********************************************************************************/
-void MainWindow::saveSettings() {
+void MainWindow::saveSettings()
+{
     DIN
         this->settings.setValue(ui->lineEditAVRDude->objectName(),ui->lineEditAVRDude->text());
         this->settings.setValue(ui->comboBoxProgrammer->objectName(),ui->comboBoxProgrammer->currentIndex());
@@ -191,7 +218,8 @@ void MainWindow::saveSettings() {
 /********************************************************************************
   connect signals and slots
 ********************************************************************************/
-void MainWindow::connectComponents() {
+void MainWindow::connectComponents()
+{
     DIN
         connect(ui->pushButtonBrowse,SIGNAL(clicked()),this,SLOT(handleBrowseFlash()));
         connect(ui->pushButtonWrite,SIGNAL(clicked()),this,SLOT(handleWriteFlash()));
@@ -209,6 +237,7 @@ void MainWindow::connectComponents() {
         connect(ui->pushButtonSaveChanges,SIGNAL(clicked()),this,SLOT(handleSaveSourceCode()));
 
         connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleSourceCodeEdited()));
+        connect(ui->doubleSpinBoxScaleFactor,SIGNAL(valueChanged(double)),this,SLOT(handleScaleFactorChanged(double)));
 
         connect(this->avrDude,SIGNAL(readyReadStandardOutput()),this,SLOT(handleAvrDudeStdout()));
         connect(this->avrDude,SIGNAL(readyRead()),this,SLOT(handleAvrDudeStdout()));
@@ -221,7 +250,8 @@ void MainWindow::connectComponents() {
 /********************************************************************************
   handle qprocess signal started(), disable other possible actions
 ********************************************************************************/
-void MainWindow::handleAvrDudeStarted() {
+void MainWindow::handleAvrDudeStarted()
+{
     DIN
         ui->widgetActions->setEnabled(false);
     DOUT
@@ -230,7 +260,8 @@ void MainWindow::handleAvrDudeStarted() {
 /********************************************************************************
   handle qprocess signal finished(int), enable other possible actions
 ********************************************************************************/
-void MainWindow::handleAvrDudeFinished(int val) {
+void MainWindow::handleAvrDudeFinished(int val)
+{
     DIN
         Q_UNUSED(val);
         ui->widgetActions->setEnabled(true);
@@ -240,7 +271,8 @@ void MainWindow::handleAvrDudeFinished(int val) {
 /********************************************************************************
   handle stdout/stderr from qprocess
 ********************************************************************************/
-void MainWindow::handleAvrDudeStdout() {
+void MainWindow::handleAvrDudeStdout()
+{
     DIN
             QString stdout(this->avrDude->readAllStandardOutput());
         QString stderr(this->avrDude->readAllStandardError());
@@ -254,7 +286,8 @@ void MainWindow::handleAvrDudeStdout() {
 /********************************************************************************
   fill avr device list and programmer list from txt -files
 ********************************************************************************/
-void MainWindow::fillComboboxes() {
+void MainWindow::fillComboboxes()
+{
     DIN
         QFile fileAvrDevices(QString("%0/avrdevices.txt").arg(QApplication::applicationDirPath()));
         if (fileAvrDevices.exists() && fileAvrDevices.open(QIODevice::ReadOnly)) {
@@ -308,7 +341,8 @@ void MainWindow::fillComboboxes() {
 /********************************************************************************
   show open file dialog
 ********************************************************************************/
-void MainWindow::handleBrowseFlash() {
+void MainWindow::handleBrowseFlash()
+{
     DIN
         QString filename = QFileDialog::getOpenFileName(this,"Locate Flash file for uploading to AVR","","*.hex");
         if (filename.isNull()==false && QFile(filename).exists()) {
@@ -320,7 +354,8 @@ void MainWindow::handleBrowseFlash() {
 /********************************************************************************
   show save file dialog
 ********************************************************************************/
-void MainWindow::handleBrowseFlashRead() {
+void MainWindow::handleBrowseFlashRead()
+{
     DIN
         QString filename = QFileDialog::getSaveFileName(this,"Select Flash file for downloading from AVR","flash.hex","*.hex");
         if (filename.isNull()==false) {
@@ -332,7 +367,8 @@ void MainWindow::handleBrowseFlashRead() {
 /********************************************************************************
   start qprocess for reading flash from avr to file
 ********************************************************************************/
-void MainWindow::handleReadFlash() {
+void MainWindow::handleReadFlash()
+{
     DIN
         QString programmerId = ui->comboBoxProgrammer->itemData(ui->comboBoxProgrammer->currentIndex()).toString();
         QString avrId = ui->comboBoxAVR->itemData(ui->comboBoxAVR->currentIndex()).toString();
@@ -361,7 +397,8 @@ void MainWindow::handleReadFlash() {
 /********************************************************************************
   start qprocess for writing flash to avr from file
 ********************************************************************************/
-void MainWindow::handleWriteFlash() {
+void MainWindow::handleWriteFlash()
+{
     DIN
         QString programmerId = ui->comboBoxProgrammer->itemData(ui->comboBoxProgrammer->currentIndex()).toString();
         QString avrId = ui->comboBoxAVR->itemData(ui->comboBoxAVR->currentIndex()).toString();
@@ -389,7 +426,8 @@ void MainWindow::handleWriteFlash() {
 /********************************************************************************
   start qprocess for testing current settings without read or write flash
 ********************************************************************************/
-void MainWindow::handleTestConnection() {
+void MainWindow::handleTestConnection()
+{
     DIN
         QString programmerId = ui->comboBoxProgrammer->itemData(ui->comboBoxProgrammer->currentIndex()).toString();
         QString avrId = ui->comboBoxAVR->itemData(ui->comboBoxAVR->currentIndex()).toString();

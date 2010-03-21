@@ -1,30 +1,35 @@
 #include "licensedialog.h"
 #include "ui_licensedialog.h"
 
-LicenseDialog::LicenseDialog(QWidget *parent) :
-    QDialog(parent),
-    m_ui(new Ui::LicenseDialog)
+LicenseDialog::LicenseDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::LicenseDialog)
 {
-    m_ui->setupUi(this);
-    loadLicense();
-    this->setWindowFlags(Qt::Popup);
+    DIN
+        m_ui->setupUi(this);
+        loadLicense();
+        this->setWindowFlags(Qt::Popup);
+    DOUT
 }
 
 /********************************************************************************
   load application license
 ********************************************************************************/
-void LicenseDialog::loadLicense() {
-    QFile fileLicense(":/gpl-3.0.txt");
-    QString license = "http://gplv3.fsf.org/";
-    if (fileLicense.open(QIODevice::ReadOnly)) {
-        license = QString(fileLicense.readAll());
-    }
-    m_ui->plainTextEditLicense->setPlainText(license);
+void LicenseDialog::loadLicense()
+{
+    DIN
+        QFile fileLicense(":/gpl-3.0.txt");
+        QString license = "http://gplv3.fsf.org/";
+        if (fileLicense.open(QIODevice::ReadOnly)) {
+            license = QString(fileLicense.readAll());
+        }
+        m_ui->plainTextEditLicense->setPlainText(license);
+    DOUT
 }
 
 LicenseDialog::~LicenseDialog()
 {
-    delete m_ui;
+    DIN
+        delete m_ui;
+    DOUT
 }
 
 void LicenseDialog::changeEvent(QEvent *e)

@@ -24,11 +24,9 @@
 
 #include "codeeditor.h"
 #include "licensedialog.h"
+#include "common.h"
 
 #define AVRDUDE "/usr/bin/avrdude"
-
-#define DIN qDebug() << ">>" << __FUNCTION__;
-#define DOUT qDebug() << "<<" << __FUNCTION__;
 
 namespace Ui
 {
@@ -64,6 +62,7 @@ protected slots:
     void handleSaveSourceCode();
     void handleSourceCodeFilenameChanged();
     void handleSourceCodeEdited();
+    void handleScaleFactorChanged(double);
 
 protected:
     void connectComponents();

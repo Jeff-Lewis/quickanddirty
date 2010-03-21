@@ -18,7 +18,8 @@ SOURCES += main.cpp \
 HEADERS += mainwindow.h \
     licensedialog.h \
     codeeditor.h \
-    highlighter.h
+    highlighter.h \
+    common.h
 FORMS += mainwindow.ui \
     licensedialog.ui
 OTHER_FILES += avrdevices.txt \
