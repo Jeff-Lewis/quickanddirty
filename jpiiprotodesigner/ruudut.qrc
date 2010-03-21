@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>ehja.BMP</file>
+        <file>katkos.BMP</file>
+        <file>katkos_l.BMP</file>
+        <file>katkos_lr.BMP</file>
+        <file>katkos_r.BMP</file>
+        <file>reika2_l.BMP</file>
+        <file>reika2_m.BMP</file>
+        <file>reika2_s.BMP</file>
+        <file>reika_l.BMP</file>
+        <file>reika_m.BMP</file>
+        <file>reika_s.BMP</file>
+        <file>tyhja.BMP</file>
+    </qresource>
+</RCC>
