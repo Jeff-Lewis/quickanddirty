@@ -22,15 +22,22 @@
                      << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
                      << "\\bvoid\\b" << "\\bvolatile\\b"
 
-                     << "\\bif\\b"
-                     << "\\belse\\b" << "\\bwhile\\b" << "#define\\b"
-                     << "#include\\b" << "\\bPCMSK\\b" << "\\bMCUCR\\b"
+                     << "\\bif\\b" << "\\basm\\b" << "\\bint32_t\\b"
+                     << "\\buint32_t\\b" << "\\bextern\\b" << "\\bsize_t\\b"
+                     << "\\belse\\b" << "\\bwhile\\b" << "#[ ]?define\\b"
+                     << "#[ ]?include\\b" << "#[ ]?if\\b" << "#[ ]?endif\\b"
+                     << "#[ ]?elseif\\b" << "#[ ]?else\\b" << "#[ ]?ifndef\\b"
+                     << "#[ ]?ifdef\\b" << "\\b__inline__\\b"
+                     << "\\bPCMSK\\b" << "\\bMCUCR\\b"
                      << "\\bDDR[A,B,C,D]+\\b" << "\\bOCR[0-9]+[A,B]+\\b"
                      << "\\bPIN[A,B,C,D]+[0-9]+\\b" << "\\bISC[0-9]+[0-9]+\\b"
                      << "\\bGIMSK\\b" << "\\bINT[0-9]+\\b" << "\\bP[A,B,C,D]+[0-9]+\\b"
                      << "\\bTCCR[0-9]+[A,B]+\\b" << "\\bCOM[0-9]+[A,B]+[0-9]+\\b"
                      << "\\bWGM[0-9]+[0-9]+\\b" << "\\bF_CPU\\b" << "\\bCS[0-9]+[0-9]+\\b"
-                     << "\\bPORT[A,B,C,D]+\\b" << "\\bICR[0-9]+\\b" << "\\bINT[0-9]+_vect\\b";
+                     << "\\bPORT[A,B,C,D]+\\b" << "\\bICR[0-9]+\\b" << "\\bINT[0-9]+_vect\\b"
+                     << "\\bFILE\\b" << "\\bUDR\\b" << "\\bint8_t\\b" << "\\buint8_t\\b"
+                     << "\\bEOF\\b" << "\\bstdout\\b" << "\\bstderr\\b" << "\\bstdin\\b"
+                     << "\\bva_list\\b";
 
      foreach (const QString &pattern, keywordPatterns) {
          rule.pattern = QRegExp(pattern);
@@ -57,7 +64,7 @@
      highlightingRules.append(rule);
 
      quotationFormat.setForeground(Qt::darkGreen);
-     rule.pattern = QRegExp("\<.*\>");
+     rule.pattern = QRegExp("<.*>");
      rule.format = quotationFormat;
      highlightingRules.append(rule);
 
@@ -65,6 +72,23 @@
      functionFormat.setForeground(Qt::blue);
      rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
      rule.format = functionFormat;
+     highlightingRules.append(rule);
+
+
+     operatorFormat.setFontItalic(true);
+     operatorFormat.setForeground(QColor(Qt::gray));
+     QStringList operatorPatterns;
+     operatorPatterns << "[+-&^/\*!~|]+=" << "<<" << ">>" << "\\b[ ]?=[^=][ ]?";
+
+     foreach (const QString &pattern, operatorPatterns) {
+         rule.pattern = QRegExp(pattern);
+         rule.format = operatorFormat;
+         highlightingRules.append(rule);
+     }
+
+     operatorFormat.setForeground(Qt::red);
+     rule.pattern = QRegExp("[~!]+");
+     rule.format = operatorFormat;
      highlightingRules.append(rule);
 
      commentStartExpression = QRegExp("/\\*");
