@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget_2">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
@@ -274,7 +274,7 @@ p, li { white-space: pre-wrap; }
                  <x>0</x>
                  <y>0</y>
                  <width>505</width>
-                 <height>343</height>
+                 <height>139</height>
                 </rect>
                </property>
                <layout class="QFormLayout" name="formLayout">
@@ -335,16 +335,6 @@ p, li { white-space: pre-wrap; }
                </item>
               </layout>
              </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_3">
-           <attribute name="title">
-            <string>Help</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_5">
-            <item>
-             <widget class="QTextEdit" name="textEditHelp"/>
             </item>
            </layout>
           </widget>
@@ -511,6 +501,16 @@ p, li { white-space: pre-wrap; }
            </layout>
           </widget>
          </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Help</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QTextEdit" name="textEditHelp"/>
         </item>
        </layout>
       </widget>
