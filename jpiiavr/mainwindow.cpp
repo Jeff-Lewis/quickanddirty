@@ -146,6 +146,23 @@ void MainWindow::handleCompilerStdout()
             if (this->compilerMode==AVRGCC) {
                 QStringList curLines = this->compileErrorMsgs->stringList();
                 curLines.append(lines);
+                while (lines.empty()==false) {
+                    QString lineData = lines.takeFirst();
+                    QStringList lineDataItems = lineData.split(":");
+                    if (lineDataItems.count()>4) {
+                        if (lineDataItems.at(3).trimmed()=="warning") {
+                            this->compileWarnings++;
+                        } else if (lineDataItems.at(3).trimmed()=="error") {
+                            this->compileErrors++;
+                        }
+                    } else if (lineDataItems.count()>2) {
+                        if (lineDataItems.at(2).trimmed()=="warning") {
+                            this->compileWarnings++;
+                        } else if (lineDataItems.at(2).trimmed()=="error") {
+                            this->compileErrors++;
+                        }
+                    }
+                }
                 this->compileErrorMsgs->setStringList(curLines);
             } else {
                 QStringList curLines = this->otherErrorMsgs->stringList();
@@ -166,10 +183,11 @@ void MainWindow::handleCompilerFinished(int value)
             ui->textEditTerminalCompiler->append("==> Failed! :(");
             if (this->compilerMode==AVRGCC) {
                 this->statusBar()->showMessage("Build failed! :(");
-                ui->listViewCompileErrors->setStyleSheet("QListView::item { background-color:rgb(255,181,181) }");
+                ui->listViewCompileErrors->setStyleSheet("QListView::item { background-color:rgb(255,181,181) } QListView::item:selected { background-color:rgb(181,181,255) }");
+                ui->tabWidgetMessages->setTabText(0,QString("avr-gcc (%0 warnings / %1 errors)").arg(this->compileWarnings).arg(this->compileErrors));
             } else if (this->compilerMode==AVROBJCOPY) {
                 this->statusBar()->showMessage("Hex generation failed! :(");
-                ui->listViewOtherErrors->setStyleSheet("QListView::item { background-color:rgb(255,181,181) }");
+                ui->listViewOtherErrors->setStyleSheet("QListView::item { background-color:rgb(255,181,181) } QListView::item:selected { background-color:rgb(181,181,255) }");
             } else {
                 //TODO
             }
@@ -178,11 +196,12 @@ void MainWindow::handleCompilerFinished(int value)
             this->statusBar()->showMessage("Build OK!");
             if (this->compilerMode==AVRGCC) {
                 this->handleCompileFlash();
-                ui->listViewCompileErrors->setStyleSheet("QListView::item { background-color:rgb(181,255,181) }");
+                ui->listViewCompileErrors->setStyleSheet("QListView::item { background-color:rgb(181,255,181) } QListView::item:selected { background-color:rgb(181,181,255) }");
+                ui->tabWidgetMessages->setTabText(0,QString("avr-gcc (%0 warnings / %1 errors)").arg(this->compileWarnings).arg(this->compileErrors));
             } else if (this->compilerMode==AVROBJCOPY) {
                 ui->lineEditFlash->setText(QString("%0.hex").arg(ui->lineEditSourceCodeFilename->text()));
                 this->handleCompileEeprom();
-                ui->listViewOtherErrors->setStyleSheet("QListView::item { background-color:rgb(181,255,181) }");
+                ui->listViewOtherErrors->setStyleSheet("QListView::item { background-color:rgb(181,255,181) } QListView::item:selected { background-color:rgb(181,181,255) }");
             } else {
                 //TODO
             }
@@ -199,6 +218,8 @@ void MainWindow::handleCompilerStarted()
         ui->menuBuild->setEnabled(false);
         if (this->compilerMode==AVRGCC) {
             this->compileErrorMsgs->setStringList(QStringList());
+            this->compileErrors = 0;
+            this->compileWarnings = 0;
         } else {
             this->otherErrorMsgs->setStringList(QStringList());
         }

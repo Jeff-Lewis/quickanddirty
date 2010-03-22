@@ -499,7 +499,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTabWidget" name="tabWidget">
+      <widget class="QTabWidget" name="tabWidgetMessages">
        <property name="tabPosition">
         <enum>QTabWidget::South</enum>
        </property>

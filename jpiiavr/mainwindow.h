@@ -101,6 +101,8 @@ private:
     QString compilerMode;
     QStringListModel* compileErrorMsgs;
     QStringListModel* otherErrorMsgs;
+    int compileWarnings;
+    int compileErrors;
 };
 
 #endif // MAINWINDOW_H
