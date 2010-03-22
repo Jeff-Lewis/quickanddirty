@@ -145,8 +145,10 @@ void MainWindow::handleCompilerFinished(int value)
     DIN
         if (value==1) { //failed
             ui->textEditTerminalCompiler->append("==> Failed! :(");
+            this->statusBar()->showMessage("Build failed! :(");
         } else {
             ui->textEditTerminalCompiler->append("==> Ok! :)");
+            this->statusBar()->showMessage("Build OK!");
             if (this->compilerMode==AVRGCC) {
                 this->handleCompileFlash();
             } else if (this->compilerMode==AVROBJCOPY) {
