@@ -105,6 +105,16 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
+         <widget class="QCheckBox" name="checkBoxAutomaticCompile">
+          <property name="text">
+           <string>Automatic Compile Mode</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QWidget" name="widget_5" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
@@ -141,7 +151,7 @@
              <x>0</x>
              <y>0</y>
              <width>559</width>
-             <height>189</height>
+             <height>160</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">

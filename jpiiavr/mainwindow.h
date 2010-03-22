@@ -84,6 +84,7 @@ protected slots:
     void handleCompileEeprom();
     void handleCreateNew();
     void handleEditCode();
+    void handleAutomaticCompile();
 
 protected:
     void connectComponents();

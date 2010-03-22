@@ -46,6 +46,14 @@ MainWindow::MainWindow(QWidget *parent)
     DOUT
 }
 
+void MainWindow::handleAutomaticCompile() {
+    DIN;
+        if (ui->checkBoxAutomaticCompile->checkState()==Qt::Checked) {
+            this->handleCompile();
+        }
+    DOUT;
+}
+
 void MainWindow::handleEditCode() {
     DIN;
         //ui->tabWidgetCoding->setCurrentIndex(0);
@@ -446,6 +454,7 @@ void MainWindow::connectComponents()
         connect(ui->actionQuit,SIGNAL(triggered()),this,SLOT(close()));
 
         connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleSourceCodeEdited()));
+        connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleAutomaticCompile()));
         connect(ui->doubleSpinBoxScaleFactor,SIGNAL(valueChanged(double)),this,SLOT(handleScaleFactorChanged(double)));
 
         connect(this->avrDude,SIGNAL(readyReadStandardOutput()),this,SLOT(handleAvrDudeStdout()));
