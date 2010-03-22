@@ -32,17 +32,19 @@ MainWindow::MainWindow(QWidget *parent)
         }
         ui->scrollAreaCodeEditor->layout()->addWidget(this->codeEditor);
         ui->widgetDatasheetActions->setVisible(false);
-        ui->pushButtonSaveChanges->setEnabled(false);
+        ui->actionSave_Changes->setEnabled(false);
         connectComponents();
         fillComboboxes();
         restoreSettings();
         loadHelp();
+        ui->statusBar->addPermanentWidget(new QLabel("Author: Juhapekka Piiroinen"));
+        ui->statusBar->addPermanentWidget(new QLabel("License: GNU/GPLv3"));
     DOUT
 }
 
 void MainWindow::handleEditCode() {
     DIN;
-        ui->tabWidgetCoding->setCurrentIndex(0);
+        //ui->tabWidgetCoding->setCurrentIndex(0);
     DOUT;
 }
 
@@ -58,7 +60,8 @@ void MainWindow::handleCreateNew()
         } else {
             this->codeEditor->setPlainText("");
         }
-        ui->pushButtonSaveChanges->setEnabled(true);
+        ui->textEditTerminalCompiler->clear();
+        ui->actionSave_Changes->setEnabled(true);
     DOUT
 }
 
@@ -100,8 +103,8 @@ void MainWindow::handleCompileFlash()
 void MainWindow::handleCompile()
 {
     DIN
-        ui->tabWidgetCoding->setCurrentIndex(1);
-        if (ui->pushButtonSaveChanges->isEnabled()) {
+        //ui->tabWidgetCoding->setCurrentIndex(1);
+        if (ui->actionSave_Changes->isEnabled()) {
             this->handleSaveSourceCode();
         }
         //avr-gcc -mmcu=atmega8 -o interrupts.elf interrupts.c
@@ -153,18 +156,16 @@ void MainWindow::handleCompilerFinished(int value)
 
             }
         }
-        ui->pushButtonCompile->setEnabled(true);
-        ui->pushButtonCompileQuick->setEnabled(true);
-        ui->pushButtonGenerateFlash->setEnabled(true);
+        ui->menuFlash->setEnabled(true);
+        ui->menuBuild->setEnabled(true);
     DOUT
 }
 
 void MainWindow::handleCompilerStarted()
 {
     DIN
-        ui->pushButtonCompile->setEnabled(false);
-        ui->pushButtonCompileQuick->setEnabled(false);
-        ui->pushButtonGenerateFlash->setEnabled(false);
+        ui->menuFlash->setEnabled(false);
+        ui->menuBuild->setEnabled(false);
     DOUT
 }
 
@@ -180,7 +181,7 @@ void MainWindow::handleScaleFactorChanged(double value)
 void MainWindow::handleSourceCodeEdited()
 {
     DIN
-        ui->pushButtonSaveChanges->setEnabled(true);
+        ui->actionSave_Changes->setEnabled(true);
     DOUT
 }
 
@@ -228,7 +229,7 @@ void MainWindow::handleSaveSourceCode()
             fileSourceCode.write(this->codeEditor->toPlainText().toAscii());
             fileSourceCode.close();
         } else 
-        ui->pushButtonSaveChanges->setEnabled(false);
+        ui->actionSave_Changes->setEnabled(false);
     DOUT
 }
 
@@ -367,25 +368,25 @@ void MainWindow::connectComponents()
 {
     DIN
         connect(ui->pushButtonBrowse,SIGNAL(clicked()),this,SLOT(handleBrowseFlash()));
-        connect(ui->pushButtonWrite,SIGNAL(clicked()),this,SLOT(handleWriteFlash()));
-        connect(ui->pushButtonRead,SIGNAL(clicked()),this,SLOT(handleReadFlash()));
-        connect(ui->pushButtonTest,SIGNAL(clicked()),this,SLOT(handleTestConnection()));
+        connect(ui->actionWrite_Flash,SIGNAL(triggered()),this,SLOT(handleWriteFlash()));
+        connect(ui->actionRead_Flash,SIGNAL(triggered()),this,SLOT(handleReadFlash()));
+        connect(ui->actionTest_Connection,SIGNAL(triggered()),this,SLOT(handleTestConnection()));
         connect(ui->pushButtonSaveSettings,SIGNAL(clicked()),this,SLOT(saveSettings()));
         connect(ui->pushButtonRestoreSettings,SIGNAL(clicked()),this,SLOT(restoreSettings()));
         connect(ui->pushButtonOpenDatasheet,SIGNAL(clicked()),this,SLOT(handleOpenDatasheet()));
-        connect(ui->pushButtonLicense,SIGNAL(clicked()),this,SLOT(handleShowLicense()));
+        connect(ui->actionLicense,SIGNAL(triggered()),this,SLOT(handleShowLicense()));
         connect(ui->pushButtonNextPage,SIGNAL(clicked()),this,SLOT(handleDatasheetNextPage()));
         connect(ui->pushButtonPreviousPage,SIGNAL(clicked()),this,SLOT(handleDatasheetPreviousPage()));
         connect(ui->spinBoxCurrentPage,SIGNAL(valueChanged(int)),this,SLOT(handleDatasheetGotoPage(int)));
         connect(ui->pushButtonOpenSource,SIGNAL(clicked()),this,SLOT(handleOpenSourceCode()));
         connect(ui->lineEditSourceCodeFilename,SIGNAL(returnPressed()),this,SLOT(handleSourceCodeFilenameChanged()));
-        connect(ui->pushButtonSaveChanges,SIGNAL(clicked()),this,SLOT(handleSaveSourceCode()));
-        connect(ui->pushButtonCompile,SIGNAL(clicked()),this,SLOT(handleCompile()));
-        connect(ui->pushButtonGenerateFlash,SIGNAL(clicked()),this,SLOT(handleCompileFlash()));
-        connect(ui->pushButtonGenerateEeprom,SIGNAL(clicked()),this,SLOT(handleCompileEeprom()));
-        connect(ui->pushButtonCreateNew,SIGNAL(clicked()),this,SLOT(handleCreateNew()));
-        connect(ui->pushButtonCompileQuick,SIGNAL(clicked()),this,SLOT(handleCompile()));
-        connect(ui->pushButtonEditCode,SIGNAL(clicked()),this,SLOT(handleEditCode()));
+        connect(ui->actionSave_Changes,SIGNAL(triggered()),this,SLOT(handleSaveSourceCode()));
+        connect(ui->actionCompile,SIGNAL(triggered()),this,SLOT(handleCompile()));
+        connect(ui->actionGenerate_Flash,SIGNAL(triggered()),this,SLOT(handleCompileFlash()));
+        connect(ui->actionGenerate_EEPROM,SIGNAL(triggered()),this,SLOT(handleCompileEeprom()));
+        connect(ui->actionNew,SIGNAL(triggered()),this,SLOT(handleCreateNew()));
+
+        connect(ui->actionQuit,SIGNAL(triggered()),this,SLOT(close()));
 
         connect(this->codeEditor,SIGNAL(textChanged()),this,SLOT(handleSourceCodeEdited()));
         connect(ui->doubleSpinBoxScaleFactor,SIGNAL(valueChanged(double)),this,SLOT(handleScaleFactorChanged(double)));
@@ -410,7 +411,8 @@ void MainWindow::connectComponents()
 void MainWindow::handleAvrDudeStarted()
 {
     DIN
-        ui->widgetActions->setEnabled(false);
+        ui->menuFlash->setEnabled(false);
+        ui->menuBuild->setEnabled(false);
     DOUT
 }
 
@@ -421,7 +423,8 @@ void MainWindow::handleAvrDudeFinished(int val)
 {
     DIN
         Q_UNUSED(val);
-        ui->widgetActions->setEnabled(true);
+        ui->menuFlash->setEnabled(true);
+        ui->menuBuild->setEnabled(true);
     DOUT
 }
 
@@ -434,9 +437,9 @@ void MainWindow::handleAvrDudeStdout()
         QString stdout(this->avrDude->readAllStandardOutput());
         QString stderr(this->avrDude->readAllStandardError());
         QString out(this->avrDude->readAll());
-        ui->textEditTerminal->append(stdout);
-        ui->textEditTerminal->append(stderr);
-        ui->textEditTerminal->append(out);
+        ui->textEditTerminalCompiler->append(stdout);
+        ui->textEditTerminalCompiler->append(stderr);
+        ui->textEditTerminalCompiler->append(out);
     DOUT
 }
 
@@ -544,8 +547,8 @@ void MainWindow::handleReadFlash()
         arguments << "-P" << portName;
         arguments << "-U" << QString("flash:r:%0").arg(flashName);
         QString command(AVRDUDE);
-        ui->textEditTerminal->clear();
-        ui->textEditTerminal->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
+        ui->textEditTerminalCompiler->clear();
+        ui->textEditTerminalCompiler->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
         this->avrDude->start(command,arguments);
     DOUT
 }
@@ -574,8 +577,8 @@ void MainWindow::handleWriteFlash()
         arguments << "-P" << portName;
         arguments << "-U" << QString("flash:w:%0").arg(flashName);
         QString command(ui->lineEditAVRDude->text());
-        ui->textEditTerminal->clear();
-        ui->textEditTerminal->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
+        ui->textEditTerminalCompiler->clear();
+        ui->textEditTerminalCompiler->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
         this->avrDude->start(command,arguments);
     DOUT
 }
@@ -596,8 +599,8 @@ void MainWindow::handleTestConnection()
         arguments << "-p" << avrId;
         arguments << "-P" << portName;
         QString command(ui->lineEditAVRDude->text());
-        ui->textEditTerminal->clear();
-        ui->textEditTerminal->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
+        ui->textEditTerminalCompiler->clear();
+        ui->textEditTerminalCompiler->append(QString("%0 %1").arg(command).arg(arguments.join(" ")));
         this->avrDude->start(command,arguments);
     DOUT
 }
