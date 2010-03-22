@@ -27,6 +27,7 @@
 #include <QtGui/QMainWindow>
 #include <QFileDialog>
 #include <QProcess>
+#include <QStringListModel>
 #include <QSettings>
 
 #include <poppler-qt4.h>
@@ -98,6 +99,8 @@ private:
     LicenseDialog* licenseDialog;
     CodeEditor* codeEditor;
     QString compilerMode;
+    QStringListModel* compileErrorMsgs;
+    QStringListModel* otherErrorMsgs;
 };
 
 #endif // MAINWINDOW_H

@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
         this->compiler = new QProcess(parent);
         this->licenseDialog = new LicenseDialog(this);
         this->codeEditor = new CodeEditor(this);
+        this->compileErrorMsgs = new QStringListModel();
+        this->otherErrorMsgs = new QStringListModel();
         if (!ui->scrollAreaCodeEditor->layout()) {
             ui->scrollAreaCodeEditor->setLayout(new QVBoxLayout());
             ui->scrollAreaCodeEditor->layout()->setMargin(0);
@@ -39,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
         loadHelp();
         ui->statusBar->addPermanentWidget(new QLabel("Author: Juhapekka Piiroinen"));
         ui->statusBar->addPermanentWidget(new QLabel("License: GNU/GPLv3"));
+        ui->listViewCompileErrors->setModel(this->compileErrorMsgs);
+        ui->listViewOtherErrors->setModel(this->otherErrorMsgs);
     DOUT
 }
 
@@ -134,6 +138,21 @@ void MainWindow::handleCompilerStdout()
         QString stdout(this->compiler->readAllStandardOutput());
         QString stderr(this->compiler->readAllStandardError());
         QString out(this->compiler->readAll());
+        qDebug() << "stdout:" << stdout;
+        qDebug() << "stderr:" << stderr;
+        qDebug() << "out:" << out;
+        if (stderr.contains(":")) {
+            QStringList lines = stderr.split("\n");
+            if (this->compilerMode==AVRGCC) {
+                QStringList curLines = this->compileErrorMsgs->stringList();
+                curLines.append(lines);
+                this->compileErrorMsgs->setStringList(curLines);
+            } else {
+                QStringList curLines = this->otherErrorMsgs->stringList();
+                curLines.append(lines);
+                this->otherErrorMsgs->setStringList(curLines);
+            }
+        }
         ui->textEditTerminalCompiler->append(stdout);
         ui->textEditTerminalCompiler->append(stderr);
         ui->textEditTerminalCompiler->append(out);
@@ -145,17 +164,27 @@ void MainWindow::handleCompilerFinished(int value)
     DIN
         if (value==1) { //failed
             ui->textEditTerminalCompiler->append("==> Failed! :(");
-            this->statusBar()->showMessage("Build failed! :(");
+            if (this->compilerMode==AVRGCC) {
+                this->statusBar()->showMessage("Build failed! :(");
+                ui->listViewCompileErrors->setStyleSheet("QListView::item { background-color:rgb(255,181,181) }");
+            } else if (this->compilerMode==AVROBJCOPY) {
+                this->statusBar()->showMessage("Hex generation failed! :(");
+                ui->listViewOtherErrors->setStyleSheet("QListView::item { background-color:rgb(255,181,181) }");
+            } else {
+                //TODO
+            }
         } else {
-            ui->textEditTerminalCompiler->append("==> Ok! :)");
+            ui->textEditTerminalCompiler->append("==> Ok!");
             this->statusBar()->showMessage("Build OK!");
             if (this->compilerMode==AVRGCC) {
                 this->handleCompileFlash();
+                ui->listViewCompileErrors->setStyleSheet("QListView::item { background-color:rgb(181,255,181) }");
             } else if (this->compilerMode==AVROBJCOPY) {
                 ui->lineEditFlash->setText(QString("%0.hex").arg(ui->lineEditSourceCodeFilename->text()));
                 this->handleCompileEeprom();
+                ui->listViewOtherErrors->setStyleSheet("QListView::item { background-color:rgb(181,255,181) }");
             } else {
-
+                //TODO
             }
         }
         ui->menuFlash->setEnabled(true);
@@ -168,6 +197,11 @@ void MainWindow::handleCompilerStarted()
     DIN
         ui->menuFlash->setEnabled(false);
         ui->menuBuild->setEnabled(false);
+        if (this->compilerMode==AVRGCC) {
+            this->compileErrorMsgs->setStringList(QStringList());
+        } else {
+            this->otherErrorMsgs->setStringList(QStringList());
+        }
     DOUT
 }
 
