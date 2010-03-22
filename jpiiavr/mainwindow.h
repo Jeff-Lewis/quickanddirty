@@ -17,6 +17,8 @@
 //avr-objcopy -j .eeprom --change-section-lma .eeprom=0 -O ihex interrupts.elf interrupts.eep
 //avr-objdump -S interrupts.elf > interrupts.lss
 /////////////////////////////////////////////////////////////////////////////////
+//gccxml --gccxml-compiler /usr/bin/avr-gcc --gccxml-cxxflags "-mmcu=atmega8" jpiiavr.c -fxml=output.xml
+//
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
