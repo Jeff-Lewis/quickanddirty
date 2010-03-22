@@ -484,6 +484,9 @@
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="features">
+    <set>QDockWidget::NoDockWidgetFeatures</set>
+   </property>
    <property name="windowTitle">
     <string>Output</string>
    </property>
