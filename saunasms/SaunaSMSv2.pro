@@ -6,9 +6,13 @@ TARGET = SaunaSMS
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
-    omasaunalahti.cpp
+    omasaunalahti.cpp \
+    mainwindowmaemo.cpp
 HEADERS += mainwindow.h \
-    omasaunalahti.h
-FORMS += mainwindow.ui
+    omasaunalahti.h \
+    mainwindowmaemo.h \
+    common.h
+FORMS += mainwindow.ui \
+    mainwindowmaemo.ui
 RESOURCES += SaunaSMSv2_resources.qrc
 OTHER_FILES += gpl-3.0.txt

@@ -25,8 +25,12 @@
 //# Version: 2.0.0.1
 //#############################################################################
 //Filename: main.cpp
+
 #include <QtGui/QApplication>
+#include <QDebug>
+#include "common.h"
 #include "mainwindow.h"
+#include "mainwindowmaemo.h"
 #include "omasaunalahti.h"
 
 int main(int argc, char *argv[])
@@ -36,7 +40,26 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("jpii.fi");
     QCoreApplication::setApplicationName("SaunaSMS");
 
+////////////////////////////////////////////////////////////////////
+// check which version we are running
+    DMSG << "Lets check which version we are running";
+#ifdef __WIN32__
+    DMSG << "__WIN32__ defined";
+  #ifdef __MAEMO_DEV_WIN32__
+    DMSG << "__MAEMO_DEV_WIN32__ defined";
+    MainWindowMaemo w;
+  #else
+    DMSG << "__MAEMO_DEV_WIN32__ is not defined";
     MainWindow w;
+  #endif
+#else
+    DMSG << "__WIN32__ is not defined";
+    MainWindowMaemo w;
+#endif
+////////////////////////////////////////////////////////////////////
+
+    DMSG << "lets display the main window";
     w.show();
+
     return a.exec();
 }
