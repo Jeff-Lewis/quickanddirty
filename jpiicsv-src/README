@@ -1,0 +1,37 @@
+NAME:
+    jpiicsv
+
+DESCRIPTION:
+    Reads CSV files or data from stdin.
+    Imports data into Sqlite :memory: table, if filename is not defined.
+
+COMMANDLINE ARGUMENTS:
+    --sort-asc              Sort data Ascending (default)
+    --sort-desc             Sort data Descending
+    --separator=\\S+        Column separator regexp string (default is \\s+)
+    --sort-column=[0-9,]+   The column which is used to sort data (default is 0)
+    --sqlite=\\S+           Database filename (default is :memory:)
+    --filename=\\S+         Input filename (if not defined reads from stdin)
+    --out-separator=\\S+    Stdout column separator
+    --pipe                  Pipe data into the application
+
+REQUIREMENTS:
+        libqt4-dev
+        libqt4-sql-sqlite
+        + autoconf
+
+BUILD INSTRUCTIONS FOR LINUX:
+        ./autogen.sh
+        ./configure
+        make
+        make install
+
+USAGE EXAMPLE:
+        jpiicsv --filename=testdata.txt --sort-desc --sort-column=0,3,20,11,1 --out-separator=,
+OR
+        cat testdata.txt | jpiicsv --sort-asc --out-separator=. --sort-column=1
+
+
+KNOWN BUGS
+    Does not support multiple files as input
+    Does not separate char/int sorting from each other from the business logics point of view

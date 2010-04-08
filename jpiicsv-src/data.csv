@@ -1,0 +1,5 @@
+Reads a line from the stream and returns a string containing the text.
+
+The returned string does not contain any trailing newline or carriage return. Note that this is different from QIODevice::readLine(), which does not strip the newline at the end of the line.
+
+On EOF you will get a QString that is null. On reading an empty line the returned QString is empty but not null. 
