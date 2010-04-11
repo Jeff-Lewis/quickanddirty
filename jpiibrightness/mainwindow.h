@@ -12,6 +12,7 @@
 
 #include <QtGui/QMainWindow>
 #include <QFile>
+#include <QMessageBox>
 
 namespace Ui
 {

@@ -54,9 +54,13 @@ void MainWindow::on_pushButtonSetValue_clicked()
     {
         ui->plainTextEditStdErr->appendPlainText("Device is not open");
         on_lineEditDevice_editingFinished();
+        QMessageBox::warning(this,"Brightness can not be set!","Something went wrong :(");
         return;
     }
-
     deviceName.write(ui->comboBoxValue->currentText().toAscii());
+    deviceName.flush();
+    QMessageBox::information(this,"Level Set!","You should have now the new brightness level in use!");
+    ui->plainTextEditStdErr->clear();
+    on_lineEditDevice_editingFinished();
 }
 
