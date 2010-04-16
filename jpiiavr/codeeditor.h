@@ -38,6 +38,9 @@ public:
     CodeEditor(QWidget *parent = 0);
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
+
+    void addErrorMsg(QString line)  { this->errorMsgs.append(line); }
+    void clearErrorMsgs()           { this->errorMsgs.clear(); }
     void addErrorLine(int line)     { this->errorLines.append(line); }
     void clearErrorLines()          { this->errorLines.clear(); }
     void addWarningLine(int line)   { this->warningLines.append(line); }
@@ -55,6 +58,7 @@ private:
     QWidget *lineNumberArea;
     Highlighter* highlighter;
     QList<int> errorLines;
+    QStringList errorMsgs;
     QList<int> warningLines;
 };
 

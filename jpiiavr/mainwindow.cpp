@@ -150,6 +150,8 @@ void MainWindow::handleCompilerStdout()
         qDebug() << "stderr:" << stderr;
         qDebug() << "out:" << out;
         this->codeEditor->clearErrorLines();
+        this->codeEditor->clearWarningLines();
+        this->codeEditor->clearErrorMsgs();
         if (stderr.contains(":")) {
             QStringList lines = stderr.split("\n");
             if (this->compilerMode==AVRGCC) {
@@ -165,6 +167,7 @@ void MainWindow::handleCompilerStdout()
                         } else if (lineDataItems.at(3).trimmed()=="error") {
                             this->compileErrors++;
                             this->codeEditor->addErrorLine(lineDataItems.at(1).trimmed().toInt());
+                            this->codeEditor->addErrorMsg(lineDataItems.at(4).trimmed());
                         }
                     } else if (lineDataItems.count()>2) {
                         if (lineDataItems.at(2).trimmed()=="warning") {
@@ -173,6 +176,7 @@ void MainWindow::handleCompilerStdout()
                         } else if (lineDataItems.at(2).trimmed()=="error") {
                             this->compileErrors++;
                             this->codeEditor->addErrorLine(lineDataItems.at(1).trimmed().toInt());
+                            this->codeEditor->addErrorMsg(lineDataItems.at(3).trimmed());
                         }
                     }
                 }
@@ -193,6 +197,7 @@ void MainWindow::handleCompilerStdout()
 void MainWindow::handleCompilerFinished(int value)
 {
     DIN
+        ui->pushButtonDetails->setText(QString("%0 warnings / %1 errors").arg(this->compileWarnings).arg(this->compileErrors));
         if (value==1) { //failed
             ui->textEditTerminalCompiler->append("==> Failed! :(");
             if (this->compilerMode==AVRGCC) {

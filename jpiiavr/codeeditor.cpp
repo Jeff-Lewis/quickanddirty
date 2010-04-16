@@ -85,6 +85,11 @@ void CodeEditor::highlightCurrentLine()
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
+        if (errorLines.indexOf(selection.cursor.blockNumber()+1)!=-1) {
+            QToolTip::showText(QCursor::pos(),errorMsgs.at(errorLines.indexOf(selection.cursor.blockNumber()+1)));
+        } else {
+            QToolTip::hideText();
+        }
         extraSelections.append(selection);
     }
     setExtraSelections(extraSelections);
