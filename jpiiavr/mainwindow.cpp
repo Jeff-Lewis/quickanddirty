@@ -407,6 +407,7 @@ void MainWindow::restoreSettings()
         ui->comboBoxAVR->setCurrentIndex(this->settings.value(ui->comboBoxAVR->objectName(),0).toInt());
         ui->lineEditFlash->setText(this->settings.value(ui->lineEditFlash->objectName()).toString());
         ui->lineEditAvrObjCopy->setText(this->settings.value(ui->lineEditAvrObjCopy->objectName(),QString(AVROBJCOPY)).toString());
+        ui->dockWidget->setVisible(this->settings.value(ui->dockWidget->objectName(),true).toBool());
         // this->codeEditor->setPlainText(this->settings.value(this->codeEditor->objectName()).toString());
         ui->lineEditSourceCodeFilename->setText(this->settings.value(ui->lineEditSourceCodeFilename->objectName()).toString());
         handleSourceCodeFilenameChanged();
@@ -428,6 +429,7 @@ void MainWindow::saveSettings()
         this->settings.setValue(ui->comboBoxAVR->objectName(),ui->comboBoxAVR->currentIndex());
         this->settings.setValue(ui->lineEditFlash->objectName(),ui->lineEditFlash->text());
         this->settings.setValue(ui->lineEditSourceCodeFilename->objectName(),ui->lineEditSourceCodeFilename->text());
+        this->settings.setValue(ui->dockWidget->objectName(),ui->dockWidget->isVisible());
         //this->settings.setValue(this->codeEditor->objectName(),this->codeEditor->toPlainText());
     DOUT
 }
