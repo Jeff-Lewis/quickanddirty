@@ -134,6 +134,9 @@
     </item>
     <item>
      <widget class="QTabWidget" name="tabWidget_2">
+      <property name="tabPosition">
+       <enum>QTabWidget::West</enum>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -155,8 +158,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>577</width>
-             <height>213</height>
+             <width>547</width>
+             <height>242</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
