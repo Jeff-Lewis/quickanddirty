@@ -156,7 +156,7 @@
              <x>0</x>
              <y>0</y>
              <width>577</width>
-             <height>247</height>
+             <height>213</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -311,7 +311,7 @@
              <x>0</x>
              <y>0</y>
              <width>575</width>
-             <height>157</height>
+             <height>123</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -357,7 +357,7 @@
              <x>0</x>
              <y>0</y>
              <width>557</width>
-             <height>232</height>
+             <height>226</height>
             </rect>
            </property>
            <layout class="QFormLayout" name="formLayout">
@@ -462,6 +462,13 @@
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButtonDetails">
+      <property name="text">
+       <string>details</string>
+      </property>
      </widget>
     </item>
    </layout>

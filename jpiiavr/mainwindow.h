@@ -86,6 +86,8 @@ protected slots:
     void handleEditCode();
     void handleAutomaticCompile();
 
+    void on_pushButtonDetails_clicked();
+
 protected:
     void connectComponents();
     void fillComboboxes();

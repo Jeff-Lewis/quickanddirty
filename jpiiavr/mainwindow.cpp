@@ -691,3 +691,10 @@ MainWindow::~MainWindow()
         delete avrDude;
     DOUT
 }
+
+
+void MainWindow::on_pushButtonDetails_clicked() {
+    DIN;
+        ui->dockWidget->setVisible(!ui->dockWidget->isVisible());
+    DOUT;
+}
