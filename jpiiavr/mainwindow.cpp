@@ -149,6 +149,7 @@ void MainWindow::handleCompilerStdout()
         qDebug() << "stdout:" << stdout;
         qDebug() << "stderr:" << stderr;
         qDebug() << "out:" << out;
+        this->codeEditor->clearErrorLines();
         if (stderr.contains(":")) {
             QStringList lines = stderr.split("\n");
             if (this->compilerMode==AVRGCC) {
@@ -160,14 +161,18 @@ void MainWindow::handleCompilerStdout()
                     if (lineDataItems.count()>4) {
                         if (lineDataItems.at(3).trimmed()=="warning") {
                             this->compileWarnings++;
+                            this->codeEditor->addWarningLine(lineDataItems.at(1).trimmed().toInt());
                         } else if (lineDataItems.at(3).trimmed()=="error") {
                             this->compileErrors++;
+                            this->codeEditor->addErrorLine(lineDataItems.at(1).trimmed().toInt());
                         }
                     } else if (lineDataItems.count()>2) {
                         if (lineDataItems.at(2).trimmed()=="warning") {
                             this->compileWarnings++;
+                            this->codeEditor->addWarningLine(lineDataItems.at(1).trimmed().toInt());
                         } else if (lineDataItems.at(2).trimmed()=="error") {
                             this->compileErrors++;
+                            this->codeEditor->addErrorLine(lineDataItems.at(1).trimmed().toInt());
                         }
                     }
                 }
@@ -178,6 +183,7 @@ void MainWindow::handleCompilerStdout()
                 this->otherErrorMsgs->setStringList(curLines);
             }
         }
+        this->codeEditor->repaint();
         ui->textEditTerminalCompiler->append(stdout);
         ui->textEditTerminalCompiler->append(stderr);
         ui->textEditTerminalCompiler->append(out);

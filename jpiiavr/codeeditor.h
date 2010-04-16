@@ -33,10 +33,15 @@ class LineNumberArea;
 class CodeEditor : public QPlainTextEdit
 {
     Q_OBJECT
+
 public:
     CodeEditor(QWidget *parent = 0);
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
+    void addErrorLine(int line)     { this->errorLines.append(line); }
+    void clearErrorLines()          { this->errorLines.clear(); }
+    void addWarningLine(int line)   { this->warningLines.append(line); }
+    void clearWarningLines()        { this->warningLines.clear(); }
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -49,6 +54,8 @@ private slots:
 private:
     QWidget *lineNumberArea;
     Highlighter* highlighter;
+    QList<int> errorLines;
+    QList<int> warningLines;
 };
 
 /////////////////////////////////////////////////////////////////////

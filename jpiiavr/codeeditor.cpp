@@ -103,9 +103,17 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     {
         if (block.isVisible() && bottom >= event->rect().top())
         {
-            QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::gray);
+            int rowId = blockNumber + 1;
+            QString number = QString::number(rowId);
+            if (errorLines.indexOf(rowId)!=-1) {
+                painter.setPen(Qt::red);
+            } else if (warningLines.indexOf(rowId)!=-1) {
+                painter.setPen(Qt::yellow);
+            } else {
+                painter.setPen(Qt::gray);
+            }
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(), Qt::AlignRight, number);
+
         }
         block = block.next();
         top = bottom;
