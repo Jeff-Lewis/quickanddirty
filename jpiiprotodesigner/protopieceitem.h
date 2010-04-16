@@ -14,6 +14,7 @@
 #define PROTOPIECEITEM_H
 
 #include <QGraphicsPixmapItem>
+#include <QPainter>
 
 class ProtoPieceItem : public QGraphicsPixmapItem
 {
@@ -32,7 +33,8 @@ protected slots:
     void rotatePixmap();
 
 protected:
-
+    QPixmap reika_m;
+    QPixmap katkos;
 
     PixmapType value;
 };
