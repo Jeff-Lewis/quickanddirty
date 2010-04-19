@@ -45,6 +45,10 @@ class CameraDriver(object):
     y += dy
     self.device.set_target(self.y_servo,y)
 
+  def goto(self,x,y):
+    self.device.set_target(self.x_servo,x)
+    self.device.set_target(self.y_servo,y)
+    
   def reset(self):
     self.device.go_home()
 
