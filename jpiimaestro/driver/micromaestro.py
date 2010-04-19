@@ -93,7 +93,7 @@ class Device(object):
 
   def __del__(self):
     self.ser.close()
-
+    self.con.close()
 
 ####################################
 if __name__=="__main__":
