@@ -22,13 +22,13 @@ boardscore = dict()
 global score
 score = 0
 resolution = (320,240)
-cellsize = 1
+cellsize = 20
 framelimit = 100
 life = -1
 
 
 def usage():
-    print "USAGE: jpiilife.py --width=320 --height=240 --cell=10 --framelimit=100 --life=10"
+    print "\nUSAGE: jpiilife.py --width=320 --height=240 --cell=10 --framelimit=100 --life=10\n\n\tUse Mouse1 to add life\n\tUse Mouse2 to remove life\n\n(C) 2010 Juhapekka Piiroinen - http://code.google.com/p/quickanddirty\n"
 
 if len(sys.argv)<2:
     usage()
@@ -41,7 +41,7 @@ except getopt.GetoptError, err:
     usage()
     sys.exit(2)
 
-newresolution = {resolution[0]:"", resolution[1]:""}
+newresolution = {"width":resolution[0], "height":resolution[1]}
 for o,a in optlist:
     if o=="--width":
         newresolution['width'] = int(a)
@@ -53,6 +53,7 @@ for o,a in optlist:
         framelimit = int(a)
     elif o=="--life":
         life = int(a)
+
 resolution = (newresolution['width'],newresolution['height'])
 
 pygame.font.init()
@@ -180,12 +181,37 @@ while True:
     # Create a rectangle
     textRect = text.get_rect()
 
+    (mouse1,mouse2,mouse3) = pygame.mouse.get_pressed()
+    (mousex,mousey) = pygame.mouse.get_pos()
+    if (mouse1):
+        x = mousex/cellsize
+        y = mousey/cellsize
+        board[(x-1,y)] = 1
+        board[(x,y)] = 1
+        board[(x,y-1)] = 1
+        screen.fill((255,255,255),(x*cellsize,y*cellsize,cellsize,cellsize))
+        if (updateCount==0):
+            updateCount = 1
+    elif (mouse3):
+        x = mousex/cellsize
+        y = mousey/cellsize
+        board[(x-1,y)] = 0
+        board[(x,y)] = 0
+        board[(x,y-1)] = 0
+        screen.fill((255,255,255),(x*cellsize,y*cellsize,cellsize,cellsize))
+        if (updateCount==0):
+            updateCount = 1
+        
+
     # Center the rectangle
     textRect.centerx = screen.get_rect().centerx
     textRect.centery = screen.get_rect().centery
 
     # Blit the text
     screen.blit(text, textRect)    
+
+        
+
     pygame.display.update()
     pygame.time.delay(int(1000 * 1.0/framelimit))
     events = pygame.event.get()
@@ -196,5 +222,7 @@ while True:
             reset_board()
             updateCount = 1
             cycle = 0
+            
+        
     if updateCount>0:
         cycle += 1
