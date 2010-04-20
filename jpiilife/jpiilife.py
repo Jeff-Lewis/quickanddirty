@@ -16,23 +16,24 @@
 import pygame,pygame.locals,sys,random
 import getopt
 
-global board
+global board,resolution,cellsize,framelimit
 board = dict()
 global score
 score = 0
 resolution = (320,240)
 cellsize = 1
+framelimit = 100
 
 
 def usage():
-    print "USAGE: jpiilife.py --width=320 --height=240 --cell=10"
+    print "USAGE: jpiilife.py --width=320 --height=240 --cell=10 --framelimit=100"
 
 if len(sys.argv)<2:
     usage()
     sys.exit(2)
     
 try:
-    optlist,args = getopt.getopt(sys.argv[1:],None,["width=","height=","cell="])
+    optlist,args = getopt.getopt(sys.argv[1:],None,["width=","height=","cell=","framelimit="])
 except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -46,15 +47,19 @@ for o,a in optlist:
         newresolution['height'] = int(a)
     elif o=="--cell":
         cellsize = int(a)
+    elif o=="--framelimit":
+        framelimit = int(a)
 resolution = (newresolution['width'],newresolution['height'])
 
 pygame.font.init()
 font = pygame.font.Font(None, 17)
 
 
-for row in range(0,resolution[0]/cellsize):
-    for col in range(0,resolution[1]/cellsize):
-        board[(row,col)] = random.randint(0,1)
+def reset_board():
+    global resolution,cellsize,board
+    for row in range(0,resolution[0]/cellsize):
+        for col in range(0,resolution[1]/cellsize):
+            board[(row,col)] = random.randint(0,1)
 
 def get_cell(ncell):
     global board,score
@@ -134,6 +139,8 @@ window = pygame.display.set_mode(resolution)
 screen = pygame.display.get_surface()
 cycle = 0
 updateCount = 1
+reset_board()
+
 while True:
     if (updateCount>0):
         updateCount = updateCells()
@@ -162,10 +169,14 @@ while True:
     # Blit the text
     screen.blit(text, textRect)    
     pygame.display.update()
-    pygame.time.delay(int(1000 * 1.0/100))
+    pygame.time.delay(int(1000 * 1.0/framelimit))
     events = pygame.event.get()
     for event in events:
-        if (event.type == pygame.locals.QUIT or event.type == pygame.locals.KEYDOWN):
+        if (event.type == pygame.locals.QUIT):
             sys.exit(0)
+        if (event.type == pygame.locals.KEYDOWN):
+            reset_board()
+            updateCount = 1
+            cycle = 0
     if updateCount>0:
         cycle += 1
