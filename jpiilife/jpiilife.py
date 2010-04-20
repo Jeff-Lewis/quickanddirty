@@ -24,17 +24,18 @@ score = 0
 resolution = (320,240)
 cellsize = 1
 framelimit = 100
+life = -1
 
 
 def usage():
-    print "USAGE: jpiilife.py --width=320 --height=240 --cell=10 --framelimit=100"
+    print "USAGE: jpiilife.py --width=320 --height=240 --cell=10 --framelimit=100 --life=10"
 
 if len(sys.argv)<2:
     usage()
     sys.exit(2)
     
 try:
-    optlist,args = getopt.getopt(sys.argv[1:],None,["width=","height=","cell=","framelimit="])
+    optlist,args = getopt.getopt(sys.argv[1:],None,["width=","height=","cell=","framelimit=","life="])
 except getopt.GetoptError, err:
     print str(err)
     usage()
@@ -50,6 +51,8 @@ for o,a in optlist:
         cellsize = int(a)
     elif o=="--framelimit":
         framelimit = int(a)
+    elif o=="--life":
+        life = int(a)
 resolution = (newresolution['width'],newresolution['height'])
 
 pygame.font.init()
@@ -57,10 +60,19 @@ font = pygame.font.Font(None, 17)
 
 
 def reset_board():
-    global resolution,cellsize,board
+    global resolution,cellsize,board,life
+    lifeleft = life
+    for row in range(0,resolution[0]/cellsize):
+        for col in range(0,resolution[1]/cellsize):
+            board[(row,col)] = 0
+            
     for row in range(0,resolution[0]/cellsize):
         for col in range(0,resolution[1]/cellsize):
             board[(row,col)] = random.randint(0,1)
+            lifeleft -= board[(row,col)]
+            if lifeleft==0:
+                return
+                
 
 def get_cell(ncell):
     global board,score
