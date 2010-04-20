@@ -16,8 +16,9 @@
 import pygame,pygame.locals,sys,random
 import getopt
 
-global board,resolution,cellsize,framelimit
+global board,resolution,cellsize,framelimit,boardscore
 board = dict()
+boardscore = dict()
 global score
 score = 0
 resolution = (320,240)
@@ -65,7 +66,7 @@ def get_cell(ncell):
     global board,score
     if (board.has_key(ncell)):
         if board[ncell]==1:
-            score+=1
+            score += 1
         return board[ncell]
     else:
         return 0
@@ -117,18 +118,17 @@ def calculateNeighbours(cell):
     return neighbours
 
 def updateCells():
-    global board
+    global board,score,boardscore
     updateCount = 0
     for cell in board:
         neighbours = calculateNeighbours(cell)
-        #print score
-        #print cell
-        if board[cell]==1:
-            if not score in [2,3]:
+        boardscore[cell] = score
+        if board[cell]>0:
+            if not boardscore[cell] in [2,3]:
                 board[cell] = 0
                 updateCount+=1
         elif board[cell]==0:
-            if score==3:
+            if boardscore[cell]==3:
                 board[cell] = 1
                 updateCount+=1
     return updateCount
@@ -156,7 +156,13 @@ while True:
         x,y = cell
         w,h = cellsize,cellsize
         if (board[cell]==1):
-            screen.fill((0,160,0),(x*w,y*h,w,h))
+            scoreb = boardscore[cell]
+            color = (0,160,0)
+            if (scoreb==2):
+                color = (0,190,0)
+            elif (scoreb==3):
+                color = (0,140,0)
+            screen.fill(color,(x*w,y*h,w,h))
     
     text = font.render('%s' % cycle, True, (255, 255, 255))
     # Create a rectangle
