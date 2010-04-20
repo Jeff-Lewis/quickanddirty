@@ -14,19 +14,46 @@
 # (C) 2010 Juhapekka Piiroinen
 ############################################################################################
 import pygame,pygame.locals,sys,random
+import getopt
 
 global board
 board = dict()
 global score
 score = 0
-
 resolution = (320,240)
+cellsize = 1
+
+
+def usage():
+    print "USAGE: jpiilife.py --width=320 --height=240 --cell=10"
+
+if len(sys.argv)<2:
+    usage()
+    sys.exit(2)
+    
+try:
+    optlist,args = getopt.getopt(sys.argv[1:],None,["width=","height=","cell="])
+except getopt.GetoptError, err:
+    print str(err)
+    usage()
+    sys.exit(2)
+
+newresolution = {resolution[0]:"", resolution[1]:""}
+for o,a in optlist:
+    if o=="--width":
+        newresolution['width'] = int(a)
+    elif o=="--height":
+        newresolution['height'] = int(a)
+    elif o=="--cell":
+        cellsize = int(a)
+resolution = (newresolution['width'],newresolution['height'])
+
 pygame.font.init()
 font = pygame.font.Font(None, 17)
 
 
-for row in range(0,63):
-    for col in range(0,63):
+for row in range(0,resolution[0]/cellsize):
+    for col in range(0,resolution[1]/cellsize):
         board[(row,col)] = random.randint(0,1)
 
 def get_cell(ncell):
@@ -86,6 +113,7 @@ def calculateNeighbours(cell):
 
 def updateCells():
     global board
+    updateCount = 0
     for cell in board:
         neighbours = calculateNeighbours(cell)
         #print score
@@ -93,26 +121,33 @@ def updateCells():
         if board[cell]==1:
             if not score in [2,3]:
                 board[cell] = 0
+                updateCount+=1
         elif board[cell]==0:
             if score==3:
                 board[cell] = 1
+                updateCount+=1
+    return updateCount
 
 pygame.init()
 pygame.display.set_caption("jpiiLife - Game of Life")
 window = pygame.display.set_mode(resolution)
 screen = pygame.display.get_surface()
 cycle = 0
+updateCount = 1
 while True:
+    if (updateCount>0):
+        updateCount = updateCells()
+
     screen.fill((0,0,0),(0,0,resolution[0],resolution[1]))
-    updateCells()
-    for x in range(0,resolution[0],10):
+
+    for x in range(0,resolution[0],cellsize):
         pygame.draw.line(screen,(0,100,0),(x,0),(x,resolution[1]))
-    for y in range(0,resolution[1],10):
+    for y in range(0,resolution[1],cellsize):
         pygame.draw.line(screen,(0,100,0),(0,y),(resolution[0],y))
     
     for cell in board:
         x,y = cell
-        w,h = 10,10
+        w,h = cellsize,cellsize
         if (board[cell]==1):
             screen.fill((0,160,0),(x*w,y*h,w,h))
     
@@ -132,4 +167,5 @@ while True:
     for event in events:
         if (event.type == pygame.locals.QUIT or event.type == pygame.locals.KEYDOWN):
             sys.exit(0)
-    cycle += 1
+    if updateCount>0:
+        cycle += 1
