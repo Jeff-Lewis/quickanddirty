@@ -180,7 +180,7 @@ while True:
     for event in events:
         if (event.type == pygame.locals.QUIT):
             sys.exit(0)
-        if (event.type == pygame.locals.KEYDOWN):
+        if (event.type == pygame.locals.KEYUP):
             reset_board()
             updateCount = 1
             cycle = 0
