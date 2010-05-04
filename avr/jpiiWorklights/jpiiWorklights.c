@@ -15,6 +15,8 @@
 #define F_CPU 8000000L
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
 
 #define PWR_BTN_PORT PORTB
 #define PWR_BTN_PIN PINB
@@ -44,17 +46,26 @@ void toggle_relay() {
 	RLY2_PORT ^= _BV(RLY2_BIT);
 }
 
+ISR(PCINT0_vect){
+    cli();
+}
+
 int main(void)
 {
+    GIMSK |= 1<< PCIE;
+    PCMSK |= 1<< PCINT0;
+
 	RLY_DDR = _BV(RLY_BIT);
 	RLY2_DDR = _BV(RLY2_BIT);
 
 	PWR_BTN_PORT |= _BV(PWR_BTN_BIT);
 
 	for (;;) {
+		sei();
+		set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+		sleep_mode();
 		if (button_is_pressed()) {
 			toggle_relay();
 		}
-
 	}
 }
