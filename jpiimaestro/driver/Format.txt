@@ -1,0 +1,11 @@
+*Comments are lines that begin with a *
+# are config Lines
+#	wrist		1	20	20	900 2000
+*	name		Ser#,vel,acc,low,high
+	
+! are frames, instructions on the positions the motors should take
+
+!	1200	1400	1100	1900	900		4
+*	ser1	ser2	ser3	ser4	ser5	sleep
+*	with the trigger set to True, we will recast sleep to 0 when inputting in the array
+* 	each instruction is incrementally added to the set list
